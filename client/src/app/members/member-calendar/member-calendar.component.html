@@ -1,0 +1,38 @@
+<div (contextmenu)="onDateSelectedToAction()">
+  <mat-card class="demo-inline-calendar-card" [appCalendarContextMenu]="menuTrigger" [matMenuTriggerFor]="menu">    
+    <mat-card-content>
+      <mat-calendar #calendar (monthSelected)="addTooltips()" [dateClass]="customDateClass" [(selected)]="selected" 
+          (selectedChange)="onDateSelected($event)" >
+      </mat-calendar>    
+    </mat-card-content>
+    <mat-card-footer class="legend-footer">
+      <div class="legend">
+        <div class="legend-item">
+          <span class="color-box vacation"></span> Vacation
+        </div>
+        <div class="legend-item">
+          <span class="color-box holiday"></span> Holiday
+        </div>
+        <div class="legend-item">
+          <span class="color-box sick-leave"></span> Sick Leave
+        </div>
+        <div class="legend-item">
+          <span class="color-box other"></span> Other
+        </div>
+      </div>
+    </mat-card-footer>
+  </mat-card>
+</div>
+ 
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="openModal()">
+    <mat-icon>{{ titleIconAddEdit() }}</mat-icon>
+    <span>{{ titleAddEdit() }}</span>
+  </button>
+  @if (showDeleteAction()) {
+    <button mat-menu-item (click)="deleteCalendarEvent()">      
+      <mat-icon>delete</mat-icon>
+      <span>Delete</span>
+    </button>
+  }
+</mat-menu>

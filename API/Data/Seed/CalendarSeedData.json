@@ -1,0 +1,112 @@
+[
+  {
+    "Id": 1,
+    "Title": "New Year's Day",
+    "Description": "New Year's celebration",
+    "StartDate": "2025-01-01T00:00:00Z",
+    "EndDate": "2025-01-01T23:59:59Z",
+    "IsVacation": false,
+    "IsHolidays": true,
+    "IsSickLeave": false,
+    "IsOther": false
+  },
+  {
+    "Id": 2,
+    "Title": "Good Friday",
+    "Description": "Commemoration of Good Friday",
+    "StartDate": "2025-04-18T00:00:00Z",
+    "EndDate": "2025-04-18T23:59:59Z",
+    "IsVacation": false,
+    "IsHolidays": true,
+    "IsSickLeave": false,
+    "IsOther": false
+  },
+  {
+    "Id": 3,
+    "Title": "Easter Monday",
+    "Description": "Celebration of Easter Monday",
+    "StartDate": "2025-04-21T00:00:00Z",
+    "EndDate": "2025-04-21T23:59:59Z",
+    "IsVacation": false,
+    "IsHolidays": true,
+    "IsSickLeave": false,
+    "IsOther": false
+  },
+  {
+    "Id": 4,
+    "Title": "Labor Day",
+    "Description": "International Workers' Day",
+    "StartDate": "2025-05-01T00:00:00Z",
+    "EndDate": "2025-05-01T23:59:59Z",
+    "IsVacation": false,
+    "IsHolidays": true,
+    "IsSickLeave": false,
+    "IsOther": false
+  },
+  {
+    "Id": 5,
+    "Title": "Ascension Day",
+    "Description": "Celebration of the Ascension of Jesus",
+    "StartDate": "2025-05-29T00:00:00Z",
+    "EndDate": "2025-05-29T23:59:59Z",
+    "IsVacation": false,
+    "IsHolidays": true,
+    "IsSickLeave": false,
+    "IsOther": false
+  },
+  {
+    "Id": 6,
+    "Title": "Whit Monday",
+    "Description": "Celebration of Whit Monday",
+    "StartDate": "2025-06-09T00:00:00Z",
+    "EndDate": "2025-06-09T23:59:59Z",
+    "IsVacation": false,
+    "IsHolidays": true,
+    "IsSickLeave": false,
+    "IsOther": false
+  },
+  {
+    "Id": 7,
+    "Title": "German Unity Day",
+    "Description": "Celebration of German reunification",
+    "StartDate": "2025-10-03T00:00:00Z",
+    "EndDate": "2025-10-03T23:59:59Z",
+    "IsVacation": false,
+    "IsHolidays": true,
+    "IsSickLeave": false,
+    "IsOther": false
+  },
+  {
+    "Id": 8,
+    "Title": "Reformation Day",
+    "Description": "Commemoration of the Protestant Reformation",
+    "StartDate": "2025-10-31T00:00:00Z",
+    "EndDate": "2025-10-31T23:59:59Z",
+    "IsVacation": false,
+    "IsHolidays": true,
+    "IsSickLeave": false,
+    "IsOther": false
+  },
+  {
+    "Id": 9,
+    "Title": "Christmas Day",
+    "Description": "Christmas celebration",
+    "StartDate": "2025-12-25T00:00:00Z",
+    "EndDate": "2025-12-25T23:59:59Z",
+    "IsVacation": false,
+    "IsHolidays": true,
+    "IsSickLeave": false,
+    "IsOther": false
+  },
+  {
+    "Id": 10,
+    "Title": "Boxing Day",
+    "Description": "Celebration of the second day of Christmas",
+    "StartDate": "2025-12-26T00:00:00Z",
+    "EndDate": "2025-12-26T23:59:59Z",
+    "IsVacation": false,
+    "IsHolidays": true,
+    "IsSickLeave": false,
+    "IsOther": false
+  }
+]

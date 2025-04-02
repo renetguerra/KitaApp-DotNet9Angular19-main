@@ -1,0 +1,48 @@
+<h2 mat-dialog-title>Edit Event</h2>
+<mat-dialog-content>
+  <form [formGroup]="eventForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+    </mat-form-field> 
+
+    <mat-form-field>
+      <mat-label>Enter a date range</mat-label>
+      <mat-date-range-input [formGroup]="range" [rangePicker]="picker" [min]="minDate" [max]="maxDate">
+        <input matStartDate formControlName="start" placeholder="Start date" />
+        <input matEndDate formControlName="end" placeholder="End date" />
+      </mat-date-range-input>
+      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>    
+
+    <mat-radio-group formControlName="eventType" aria-label="Select an option">
+      @for (option of eventOptions; track $index) {
+        <mat-radio-button [value]="option.value">
+          {{ option.label }}
+        </mat-radio-button>
+      }      
+    </mat-radio-group>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="save()"
+    [disabled]="eventForm.invalid"
+  >
+    Save
+  </button>
+</mat-dialog-actions>

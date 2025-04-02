@@ -1,0 +1,130 @@
+  .demo-inline-calendar-card {
+    width: 400px;
+  }
+
+  button.holidays-date-class {
+    background: #64b5f6 !important;
+    border-radius: 100% !important;
+  }
+
+  button.vacation-date-class {
+    background: rgba(204, 39, 39, 0.89);
+    border-radius: 100%;
+  }
+
+  button.sickLeave-date-class {
+    background: orange;
+    border-radius: 100%;
+  }
+
+
+  button.date-range-selected {
+    background-color: rgba(141, 241, 241, 0.3) !important;
+    border-radius: 50%;
+
+  }
+
+  button.range-start {
+    border-top-right-radius: 50% !important;
+    border-bottom-right-radius: 50% !important;
+  }
+  
+  button.range-end {
+    border-top-left-radius: 50% !important;
+    border-bottom-left-radius: 50% !important;    
+  }
+
+  button.range-single {
+    border-radius: 50% !important;
+  }
+  
+  button.range-middle {
+    border-radius: 0 !important;
+    opacity: 0.5 !important;    
+    /* transform: scale(0.8) !important; */
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    width: 100% !important;
+    height: 40px !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .mat-calendar-body-cell[data-title]:after {
+    content: attr(data-title);
+    position: absolute;
+    font-size: 12px;
+    color: white;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 2px 4px;
+    border-radius: 4px;
+    border-color: black;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;    
+  }  
+
+  .dots-container-holidays {
+    display: inline-flex;
+    gap: 2px;
+    position: relative;
+    top: 16px;
+
+    > span {
+      width: 8px;
+      height: 8px;
+      background-color: orange;
+      border-radius: 50%;
+    }
+  }
+
+  .calendar-card {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .legend-footer {
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+  
+  .legend {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+  }
+  
+  .color-box {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+  }
+  
+  .vacation { background-color: rgba(204, 39, 39, 0.89); } 
+  .holiday { background-color: #64b5f6; } 
+  .sick-leave { background-color: orange; } 
+  .other { background-color: #ba68c8; } 
+
+  .mat-menu-panel {
+    display: none;
+  }
+  
+  

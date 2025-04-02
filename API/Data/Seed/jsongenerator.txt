@@ -1,0 +1,99 @@
+JG.repeat(8, 8, {
+  Name: JG.firstName('female'),
+  Surname() {    
+    return (_.uniq(JG.repeat(1,JG.random(
+      	'Müller', 'Schmidt', 'Schneider', 'Fischer', 'Weber', 'Meyer', 'Wagner',
+      	'Becker', 'Hoffmann', 'Schulz', 'Koch', 'Richter', 'Bauer', 'Klein', 'Wolf',
+      	'Schröder', 'Neumann', 'Schwarz', 'Zimmermann', 'Hartmann'))).join(' '));
+  },
+  KnownAs() { 
+    return (this.Name);
+  },
+  Gender: 'female',
+  DateOfBirth: moment(JG.date(new Date(2020, 0, 1), new Date(2025, 0, 1))).format('YYYY-MM-DD'),
+  Created: moment(JG.date(new Date(2025, 0, 1), new Date(2020,5,30))).format("YYYY-MM-DD"),
+  LastActive: moment(JG.date(new Date(2025, 4, 1), new Date(2025,5,30))).format("YYYY-MM-DD"),
+  City: JG.city(),
+  Country: JG.country(),
+  Introduction: JG.loremIpsum(1, "paragraphs"),  
+  Interests: JG.loremIpsum(1, "sentences"),
+  FamilyMembers() {
+    let parentCount = 1;
+    let gender;    
+    
+    const surname = _.uniq(JG.repeat(1,JG.random(
+        'Müller', 'Schmidt', 'Schneider', 'Fischer', 'Weber', 'Meyer', 'Wagner',
+        'Becker', 'Hoffmann', 'Schulz', 'Koch', 'Richter', 'Bauer', 'Klein', 'Wolf',
+        'Schröder', 'Neumann', 'Schwarz', 'Zimmermann', 'Hartmann'))).join(' ');
+        
+    // Asegurar que los padres sean uno male y otro female
+        if (parentCount === 1) {
+            gender = 'male';
+        } else if (parentCount === 2) {
+            gender = 'female';
+        } else {
+            gender = JG.random('male', 'female');
+        }    
+    
+    return JG.repeat(2, 4, {
+              
+        // Construcción correcta de los datos
+        FullName: JG.firstName(gender) + ' ' + ((parentCount < 3) ? surname : JG.lastName()),
+
+        Email: ((parentCount < 3) ? (_.snakeCase(surname + '_' + parentCount) + "@gmail.de").toLowerCase() : null),
+
+        Phone: '+49 ' + JG.integer(100, 999) + ' ' + JG.integer(1000000, 9999999),
+
+        IsParent: (parentCount < 3) ? (parentCount++, true) : false,
+
+        FamilyMemberPhotos: [
+            {
+                Url: 'https://randomuser.me/api/portraits/' + (gender === 'female' ? 'women/' : 'men/') + JG.integer(1, 99) + '.jpg',
+                IsMain: true
+            }
+        ]
+    });
+},
+  Addresses: [
+    {
+      Street: JG.street(),
+      StreetNumber() {
+        return JG.integer(1,99).toString();
+      },
+      City: 'Hamburg',
+      Country: 'Germany',
+      IsPrimaryResidence: true,
+      PostalCode() {
+        return JG.integer(10000, 99998).toString();
+      }
+    }
+  ],
+  Tutor: {
+    FullName: JG.random('Mandy Müller', 'Christine Müller', 'Karol Müller'),
+    DateOfBirthday: JG.date(new Date(1950, 0, 1), new Date(2025, 0, 1), "YYYY-MM-dd"),
+    Email() {
+        let nameParts = this.FullName.toLowerCase().split(" ");
+        let email = nameParts[0] + "_" + nameParts[1].slice(0, 3) + "@gmail.com";
+        return email.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    },
+    Created: JG.date(new Date(2025, 0, 1), new Date(2020,5,30), "YYYY-MM-dd"),
+    LastActive: JG.date(new Date(2025, 4, 1), new Date(2025,5,30), "YYYY-MM-dd"),
+    TutorPhotos: [
+        {
+          Url() {
+          	return 'https://randomuser.me/api/portraits/women/' + JG.integer(1,99) + '.jpg';
+          },
+          IsMain: true
+      	}
+      ]
+  },
+  StudentPhotos: [
+            {
+                Url: 'https://randomuser.me/api/portraits/women/' + JG.integer(1, 99) + '.jpg',
+                IsMain: true
+            }
+        ]
+});
+
+
+

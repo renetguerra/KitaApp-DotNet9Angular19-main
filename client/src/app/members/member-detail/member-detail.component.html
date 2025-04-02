@@ -1,0 +1,97 @@
+<div class="row">
+    <div class="col-4">
+        <div class="card">
+            <img src="{{member().photoUrl || './assets/user.png'}}" alt="{{member().knownAs}}"
+                class="card-img-top img-thumbnail">
+            <div class="card-body">
+                @if ((presenceService.onlineUsers$ | async)?.includes(member().username)) {
+                    <div class="mb-2">
+                        <i class="fa fa-user-circle text-success"></i> Online now
+                    </div>
+                }
+                <div>
+                    <strong>Name:</strong>
+                    <p>{{member().knownAs}}</p> 
+                </div>
+                <div>
+                    <strong>Location:</strong>
+                    <p>{{member().city}}, {{member().country}}</p>
+                </div>
+                <div>
+                    <strong>Age:</strong>
+                    <p>{{member().age}}</p>
+                </div>
+                <div>
+                    <strong>Last active:</strong> 
+                    <p>{{member().lastActive | timeago}}</p>
+                </div>
+                <div>
+                    <strong>Member since:</strong>
+                    <p>{{member().created | date:'dd MMM yyyy'}}</p>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="btn-group d-flex">                    
+                    <button (click)="selectTab('Messages')" class="btn btn-primary">Message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-8">
+        <tabset class="member-tabset" #memberTabs>
+            <tab heading="About {{member().knownAs}}" (selectTab)="onTabActivated($event)">                
+                <div>
+                    @for (address of member().addresses; track address.id) {
+                        @if (address.isPrimaryResidence) {
+                            <h4>Main address</h4>
+                            <p>{{address.street}}, {{address.streetNumber}}, {{address.postalCode}}, {{address.city}}, {{address.country}}</p>                            
+                        }           
+                        @else {
+                            <h4>Secundary address</h4>
+                            <p>{{address.street}}, {{address.streetNumber}}, {{address.postalCode}}, {{address.city}}, {{address.country}}</p>
+                        }             
+                    }
+                </div>                                
+                <h4>Description</h4>
+                <p>{{member().introduction}}</p>                
+            </tab>
+            <tab heading="Interests" (selectTab)="onTabActivated($event)">
+                <h4>Interests</h4>
+                <p>{{member().interests}}</p>
+            </tab>
+            <tab heading="Photos" #photoTab="tab" (selectTab)="onTabActivated($event)">                                
+                 @if(photoTab.active){
+                     <gallery [items]="galleryImages" class="gallery"></gallery>
+                 }
+            </tab>
+            <tab heading="Family members" (selectTab)="onTabActivated($event)">                
+                @for (familyMember of member().familyMembers; track familyMember.id) {
+                    <div class="card-familyMember">
+                        <div class="row">
+                            <div class="col-4">
+                                <img src="{{ familyMember!.photoUrl || './assets/user.png' }}" alt="{{ familyMember!.fullName }}" class="card-img">
+                            </div>
+                            <div class="col-8 d-flex flex-column">
+                                <p class="card-text" [ngClass]="{ 'text-success': familyMember.isParent }">
+                                    {{familyMember.fullName}}
+                                </p>
+                                <p class="card-text">{{familyMember.email}}</p>
+                                <p class="card-text">{{familyMember.phone}}</p>
+                                <p class="card-text">{{familyMember.relationship}}</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </tab>
+            <tab heading="Messages" (selectTab)="onTabActivated($event)" >
+                <app-member-messages [username]="member().username"></app-member-messages>
+            </tab>
+            <tab heading="Calendar" (selectTab)="onTabActivated($event)">                
+                <app-member-calendar [userCalendars]="member().userCalendars"></app-member-calendar>
+            </tab>
+            <tab *appHasRole="['Admin', 'Moderator']" heading="Students" (selectTab)="onTabActivated($event)" class="custom-tab-size">                
+                <app-member-list></app-member-list>
+            </tab>
+        </tabset>
+    </div>
+</div>
