@@ -107,7 +107,8 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
         interests: member.interests,
         addresses: member.addresses,
         city: member.city,             
-        country: member.country,        
+        country: member.country, 
+        canSendMessages: member.canSendMessages,       
         userPhotos: member.userPhotos,
         familyMembers: member.familyMembers,
         userCalendars: member.userCalendars
@@ -133,21 +134,22 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
 
   onTabActivated(data: TabDirective) {
     this.activeTab = data;
-    if ((this.activeTab.heading === 'Messages' || this.activeTab.heading === 'Calendar') && this.user()?.roles.includes('Admin') && this.user()?.username === this.member().username) {      
-      this.activeTab.disabled = true;
-      this.activeTab.active = false;
-      this.activeTab.customClass = 'inactive-tab';
-      this.isMessagesTabDisabled = true; 
+    // if ((this.activeTab.heading === 'Messages' || this.activeTab.heading === 'Calendar') && this.user()?.roles.includes('Admin') && this.user()?.username === this.member().username) {      
+    //   this.activeTab.disabled = true;
+    //   this.activeTab.active = false;
+    //   this.activeTab.customClass = 'inactive-tab';
+    //   this.isMessagesTabDisabled = true; 
                        
-      this.router.navigate(['members', this.member().username], {
-        queryParams: { tab: 'Students' },
-      }).then(() => {        
-        this.selectTab('Students');
-      });      
+    //   this.router.navigate(['members', this.member().username], {
+    //     queryParams: { tab: 'Students' },
+    //   }).then(() => {        
+    //     this.selectTab('Students');
+    //   });      
 
-      this.cdr.detectChanges();      
-    }
-    else if ((this.activeTab.heading === 'Messages' || this.activeTab.heading === 'Calendar') && this.user()) {
+    //   this.cdr.detectChanges();      
+    // }
+    // else 
+    if ((this.activeTab.heading === 'Messages' || this.activeTab.heading === 'Calendar') && this.user()) {
       this.messageService.createHubConnection(this.user()!, this.member().username);
     } else {
       this.messageService.stopHubConnection();

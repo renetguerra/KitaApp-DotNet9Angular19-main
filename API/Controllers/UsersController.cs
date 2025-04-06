@@ -25,7 +25,17 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper,
         return Ok(users);
     }
 
-    [HttpGet("{username}")]  // /api/users/2
+    [HttpGet("all-users")]
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetAllUsers()
+    {        
+        var users = await unitOfWork.UserRepository.GetUsersAsync();
+
+        var userDtos = mapper.Map<IEnumerable<MemberDto>>(users);
+
+        return Ok(userDtos);
+    }
+
+    [HttpGet("{username}")]
     public async Task<ActionResult<MemberDto>> GetUser(string username)
     {
         var currentUsername = User.GetUsername();

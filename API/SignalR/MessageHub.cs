@@ -20,13 +20,15 @@ public class MessageHub(IUnitOfWork unitOfWork,
         if (Context.User.GetUsername() == otherUser.Value)
         {
             var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(Context.User.GetUsername());
-            otherUser = user.TutorId switch
+            if (user?.UserRoles?.Any(r => r.Role.Name == "Member") == true)
             {
-                (int)TutorEnum.Karol => "carol",
-                (int)TutorEnum.Mandy => "mandy",
-                _ => "christine"
-            };
-
+                otherUser = user.TutorId switch
+                {
+                    (int)TutorEnum.Karol => "carol",
+                    (int)TutorEnum.Mandy => "mandy",
+                    _ => "christine"
+                };
+            }            
         }                   
 
         if (Context.User == null || string.IsNullOrEmpty(otherUser))
@@ -51,71 +53,6 @@ public class MessageHub(IUnitOfWork unitOfWork,
         await Clients.Group(group.Name).SendAsync("UpdatedGroup", group);
         await base.OnDisconnectedAsync(exception);
     }
-
-    //public async Task SendMessage(CreateMessageDto createMessageDto)
-    //{
-    //     var username = Context.User?.GetUsername() ?? throw new Exception("could not get user");
-
-
-    //    //if (username == createMessageDto.RecipientUsername.ToLower())
-    //    //    throw new HubException("You cannot message yourself");
-
-    //    if (username == createMessageDto.RecipientUsername.ToLower())
-    //    {
-    //        var sender = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
-    //        var recipient = await unitOfWork.UserRepository.GetUserByUsernameAsync("admin");
-    //        //var recipient = await unitOfWork.TutorRepository.GetUserByIdAsync(sender.TutorId);
-
-    //        await CreateMessageAndGroup(sender, recipient, createMessageDto);
-    //    }
-    //    else
-    //    {
-    //        //var sender = await unitOfWork.TutorRepository.GetUserByIdAsync(sender.TutorId);
-    //        var sender = await unitOfWork.UserRepository.GetUserByUsernameAsync("admin");
-    //        var recipient = await unitOfWork.UserRepository.GetUserByUsernameAsync(createMessageDto.RecipientUsername);
-    //        await CreateMessageAndGroup(sender, recipient, createMessageDto);
-    //    }
-
-
-    //    //var sender = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
-    //    //var recipient = await unitOfWork.UserRepository.GetUserByUsernameAsync(createMessageDto.RecipientUsername);
-
-    //    if (recipient == null || sender == null || sender.UserName == null || recipient.UserName == null) 
-    //        throw new HubException("Cannot send message at this time");
-
-    //    var message = new Message
-    //    {
-    //        Sender = sender,
-    //        Recipient = recipient,
-    //        SenderUsername = sender.UserName,
-    //        RecipientUsername = recipient.UserName,
-    //        Content = createMessageDto.Content
-    //    };
-
-    //    var groupName = GetGroupName(sender.UserName, recipient.UserName);
-    //    var group = await unitOfWork.MessageRepository.GetMessageGroup(groupName);
-
-    //    if (group != null && group.Connections.Any(x => x.Username == recipient.UserName))
-    //    {
-    //        message.DateRead = DateTime.UtcNow;
-    //    } 
-    //    else 
-    //    {
-    //        var connections = await PresenceTracker.GetConnectionsForUser(recipient.UserName);
-    //        if (connections != null && connections?.Count != null)
-    //        {
-    //            await presenceHub.Clients.Clients(connections).SendAsync("NewMessageReceived", 
-    //                new {username = sender.UserName, knownAs = sender.KnownAs});
-    //        }
-    //    }
-
-    //    unitOfWork.MessageRepository.AddMessage(message);
-
-    //    if (await unitOfWork.Complete()) 
-    //    {
-    //        await Clients.Group(groupName).SendAsync("NewMessage", mapper.Map<MessageDto>(message));
-    //    }
-    //}
 
     public async Task SendMessage(CreateMessageDto createMessageDto)
     {

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Member } from '../_models/member';
-import { of, map, take } from 'rxjs';
+import { of, map, take, catchError, throwError } from 'rxjs';
 import { UserParams } from '../_models/userParams';
 import { AccountService } from './account.service';
 import { User } from '../_models/user';
@@ -61,12 +61,21 @@ export class MembersService {
     )
   }
 
-  getMember(username: string) {
-    const member = [...this.memberCache.values()]
-      .reduce((arr, elem) => arr.concat(elem.result), [])
-      .find((member: Member) => member.username === username);
+  getMembersWithoutCacheAndPagination() {        
+    return this.http.get<Member[]>(this.baseUrl + 'users/all-users').pipe(
+      catchError(error => {
+        console.error('Error en la petición HTTP:', error);
+        return throwError(() => new Error('Error al obtener los usuarios'));
+      })
+    )
+  }
 
-    if (member) return of(member);
+  getMember(username: string) {
+    // const member = [...this.memberCache.values()]
+    //   .reduce((arr, elem) => arr.concat(elem.result), [])
+    //   .find((member: Member) => member.username === username);
+
+    // if (member) return of(member);
     
     return this.http.get<Member>(this.baseUrl + 'users/' + username);
   }
@@ -86,17 +95,5 @@ export class MembersService {
 
   deletePhoto(photoId: number) {
     return this.http.delete(this.baseUrl + 'users/delete-photo/' + photoId);
-  }
-
-  addLike(username: string) {
-    return this.http.post(this.baseUrl + 'likes/' + username, {})
-  }
-
-  getLikes(predicate: string, pageNumber: number, pageSize: number) {
-    let params = getPaginationHeaders(pageNumber, pageSize);
-
-    params = params.append('predicate', predicate);
-
-    return getPaginatedResult<Member[]>(this.baseUrl + 'likes', params, this.http);
-  }
+  }  
 }

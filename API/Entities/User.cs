@@ -16,7 +16,8 @@ public class User : IdentityUser<int>
     public string? City { get; set; }
     public string? Country { get; set; }
     public string? Introduction { get; set; }
-    public string? Interests { get; set; }    
+    public string? Interests { get; set; }
+    public bool CanSendMessages { get; set; }
     public int? TutorId { get; set; }
     public virtual Tutor? Tutor { get; set; }        
     public virtual List<Address> Addresses { get; set; } = [];    
@@ -24,7 +25,7 @@ public class User : IdentityUser<int>
     public virtual List<UserLike> LikedUsers { get; set; } = [];
     public virtual List<Message> MessagesSent { get; set; } = [];
     public virtual List<Message> MessagesReceived { get; set; } = [];
-    public virtual ICollection<UserRole> StudentRoles { get; set; } = [];
+    public virtual ICollection<UserRole> UserRoles { get; set; } = [];
     public virtual ICollection<UserPhoto> UserPhotos { get; set; } = [];
     public virtual ICollection<FamilyMember> FamilyMembers { get; set; } = [];    
     public virtual ICollection<UserCalendar> UserCalendars { get; set; } = [];

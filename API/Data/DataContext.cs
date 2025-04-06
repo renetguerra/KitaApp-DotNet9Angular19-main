@@ -28,7 +28,7 @@ public class DataContext(DbContextOptions options) : IdentityDbContext<User, App
         base.OnModelCreating(builder);
 
         builder.Entity<User>()
-            .HasMany(ur => ur.StudentRoles)
+            .HasMany(ur => ur.UserRoles)
             .WithOne(u => u.User)
             .HasForeignKey(ur => ur.UserId)
         .IsRequired();       

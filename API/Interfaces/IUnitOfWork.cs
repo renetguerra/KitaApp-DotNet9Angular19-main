@@ -4,8 +4,7 @@ public interface IUnitOfWork
 {
     IUserRepository UserRepository {get;}
     IMessageRepository MessageRepository {get;}
-    ICalendarRepository CalendarRepository { get; }
-    ILikesRepository LikesRepository {get;}
+    ICalendarRepository CalendarRepository { get; }    
     IUserPhotoRepository PhotoRepository {get;}
     Task<bool> Complete();
     bool HasChanges();

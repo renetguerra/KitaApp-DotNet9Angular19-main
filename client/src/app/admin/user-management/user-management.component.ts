@@ -1,6 +1,8 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { User } from 'src/app/_models/user';
+import { AccountService } from 'src/app/_services/account.service';
 import { AdminService } from 'src/app/_services/admin.service';
 import { RolesModalComponent } from 'src/app/modals/roles-modal/roles-modal.component';
 
@@ -8,7 +10,7 @@ import { RolesModalComponent } from 'src/app/modals/roles-modal/roles-modal.comp
     selector: 'app-user-management',
     templateUrl: './user-management.component.html',
     styleUrls: ['./user-management.component.css'],
-    imports: []
+    imports: [MatSlideToggleModule]
 })
 export class UserManagementComponent implements OnInit {  
   users = signal<User[]>([]);
@@ -18,6 +20,8 @@ export class UserManagementComponent implements OnInit {
     'Moderator',
     'Member'
   ]
+   
+  canSendMessages = signal<{ [username: string]: boolean }>({});
 
   constructor(private adminService: AdminService, private modalService: BsModalService) { }
 
@@ -27,7 +31,16 @@ export class UserManagementComponent implements OnInit {
 
   getUsersWithRoles() {
     this.adminService.getUsersWithRoles().subscribe({
-      next: users => this.users.set(users)
+      next: users => {
+        this.users.set(users);
+        console.log(users);
+
+        const messagePermissions: { [username: string]: boolean } = {};
+        users.forEach(user => {
+          messagePermissions[user.username] = user.canSendMessages;
+        });
+        this.canSendMessages.set(messagePermissions);
+      }
     })
   }
 
@@ -55,5 +68,21 @@ export class UserManagementComponent implements OnInit {
 
   private arrayEqual(arr1: any, arr2: any) {
     return JSON.stringify(arr1.sort()) === JSON.stringify(arr2.sort())
+  }
+
+  allowSendMessages(user: User) {    
+    const currentState = this.canSendMessages()[user.username];
+    this.canSendMessages.update(state => ({
+      ...state,
+      [user.username]: !currentState
+    }));
+
+    // this.adminService.updateCanSendMessages(user.username, !currentState).subscribe();
+
+    this.adminService.updateCanSendMessages(user.username, !currentState).subscribe({
+      next: () => {
+        this.getUsersWithRoles();
+      }
+    })
   }
 }

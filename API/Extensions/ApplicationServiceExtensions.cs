@@ -14,8 +14,7 @@ public static class ApplicationServiceExtensions
     {
         services.AddControllers().AddJsonOptions(options =>
         {
-            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            //options.JsonSerializerOptions.Converters.Add(new DateOnlyConverter());
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());            
         });
         services.AddDbContext<DataContext>(opt =>
         {
@@ -23,8 +22,7 @@ public static class ApplicationServiceExtensions
         });
         services.AddCors();
         services.AddScoped<ITokenService, TokenService>();
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<ILikesRepository, LikesRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();        
         services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<ICalendarRepository, CalendarRepository>();
         services.AddScoped<IUserPhotoRepository, UserPhotoRepository>();

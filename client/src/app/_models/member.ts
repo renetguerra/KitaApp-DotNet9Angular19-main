@@ -16,6 +16,7 @@ export interface Member {
     interests: string;
     city: string;
     country: string;
+    canSendMessages: boolean;
     addresses: Address[];
     userPhotos: Photo[];
     familyMembers: FamilyMember[];

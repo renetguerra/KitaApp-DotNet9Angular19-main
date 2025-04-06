@@ -14,8 +14,7 @@ import { CommonModule } from '@angular/common';
 })
 export class MemberCardComponent implements OnInit {
   member = input<Member | undefined>();
-
-  private membersService = inject( MembersService );
+  
   public presenceService = inject( PresenceService );
   private toastr = inject(ToastrService);
 
@@ -25,12 +24,6 @@ export class MemberCardComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('Member_Username:', this.member()?.username);
-  }
-
-  // addLike(member: Member) {
-  //   this.membersService.addLike(member.username).subscribe({
-  //     next: () => this.toastr.success('You have liked ' + member.knownAs)
-  //   })
-  // }
+  } 
 
 }

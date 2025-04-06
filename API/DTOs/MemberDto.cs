@@ -16,6 +16,7 @@ public class MemberDto
     public string? Interests { get; set; }    
     public string? City { get; set; }
     public string? Country { get; set; }
+    public bool CanSendMessages { get; set; }
     public List<AddressDto>? Addresses { get; set; }
     public List<FamilyMemberDto>? FamilyMembers { get; set; }
     public List<PhotoDto>? UserPhotos { get; set; }

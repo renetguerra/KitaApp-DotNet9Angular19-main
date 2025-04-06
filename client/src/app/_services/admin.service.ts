@@ -19,4 +19,9 @@ export class AdminService {
     return this.http.post<string[]>(this.baseUrl + 'admin/edit-roles/' 
       + username  + '?roles=' + roles, {});
   }
+
+  updateCanSendMessages(username: string, canSendMessages: boolean) {
+    return this.http.post(this.baseUrl + 'admin/update-can-send-messages/' 
+      + username  + '?canSendMessages=' + canSendMessages, {});
+  }
 }

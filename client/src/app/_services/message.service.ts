@@ -15,8 +15,8 @@ export class MessageService {
   baseUrl = environment.apiUrl;
   hubUrl = environment.hubUrl;
   private hubConnection?: HubConnection;
-  private messageThreadSouce = new BehaviorSubject<Message[]>([]);
-  messageThread$ = this.messageThreadSouce.asObservable();
+  private messageThreadSource = new BehaviorSubject<Message[]>([]);
+  messageThread$ = this.messageThreadSource.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -30,13 +30,13 @@ export class MessageService {
     this.hubConnection.start().catch(error => console.log(error));
 
     this.hubConnection.on('ReceiveMessageThread', messages => {
-      this.messageThreadSouce.next(messages);
+      this.messageThreadSource.next(messages);
     })
 
     this.hubConnection.on('NewMessage', message => {
       this.messageThread$.pipe(take(1)).subscribe({
         next: messages => {
-          this.messageThreadSouce.next([...messages, message])
+          this.messageThreadSource.next([...messages, message])
         }
       })
     })
@@ -50,7 +50,7 @@ export class MessageService {
                 message.dateRead = new Date(Date.now())
               }
             })
-            this.messageThreadSouce.next([...messages]);
+            this.messageThreadSource.next([...messages]);
           }
         })
       }

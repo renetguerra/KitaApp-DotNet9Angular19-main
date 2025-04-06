@@ -21,7 +21,8 @@ public class AdminController(UserManager<User> userManager, IUnitOfWork unitOfWo
             {
                 x.Id,
                 Username = x.UserName,
-                Roles = x.StudentRoles.Select(r => r.Role.Name).ToList()
+                x.CanSendMessages,
+                Roles = x.UserRoles.Select(r => r.Role.Name).ToList()
             }).ToListAsync();
 
         return Ok(users);
@@ -50,6 +51,20 @@ public class AdminController(UserManager<User> userManager, IUnitOfWork unitOfWo
         if (!result.Succeeded) return BadRequest("Failed to remove from roles");
 
         return Ok(await userManager.GetRolesAsync(user));
+    }
+
+    [HttpPost("update-can-send-messages/{username}")]
+    public async Task<ActionResult> CanSendMessages(string userName, bool canSendMessages)
+    {
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(userName);
+
+        if (user == null) return BadRequest("Could not get user from db");
+
+        user.CanSendMessages = canSendMessages;        
+
+        await unitOfWork.Complete();
+
+        return Ok();
     }
 
     [Authorize(Policy = "ModeratePhotoRole")]
