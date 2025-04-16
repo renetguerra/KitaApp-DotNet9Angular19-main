@@ -13,6 +13,7 @@ import { TimeagoModule } from "ngx-timeago";
 import { ModalModule } from "ngx-bootstrap/modal";
 import { MAT_CHECKBOX_DEFAULT_OPTIONS, MatCheckboxDefaultOptions } from "@angular/material/checkbox";
 import { MatMenuModule, MatMenuTrigger } from "@angular/material/menu";
+import { MatButtonModule } from "@angular/material/button";
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -26,7 +27,7 @@ export const appConfig: ApplicationConfig = {
         provideToastr({
             positionClass: 'toast-bottom-right'
         }),
-        importProvidersFrom(NgxSpinnerModule, TimeagoModule.forRoot(), ModalModule.forRoot(), MatMenuModule, MatMenuTrigger),
+        importProvidersFrom(NgxSpinnerModule, TimeagoModule.forRoot(), ModalModule.forRoot(), MatMenuModule, MatMenuTrigger, MatButtonModule),
         { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },        
         provideHttpClient(
             withFetch(),

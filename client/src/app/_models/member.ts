@@ -2,6 +2,7 @@ import { Address } from "./address";
 import { UserCalendar } from "./userCalendar";
 import { FamilyMember } from "./familyMember";
 import { Photo } from "./photo";
+import { UserNotification } from "./userNotification";
 
 export interface Member {
     id: number;    
@@ -21,4 +22,5 @@ export interface Member {
     userPhotos: Photo[];
     familyMembers: FamilyMember[];
     userCalendars: UserCalendar[];
+    userNotifications: UserNotification[];
 }

@@ -12,8 +12,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     catchError(error => {
       if (error) {
         switch (error.status) {
-          case 400:
-            if (error.error.errors) {
+          case 400:            
+            if (error.error.errors) {              
               const modelStateErrors = [];
               for (const key in error.error.errors) {
                 if (error.error.errors[key]) {
@@ -22,7 +22,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
               }
               throw modelStateErrors.flat();
             } else {
-              toastr.error(error.error, error.status);
+              toastr.error(error.error.message, error.status);
             }
             break;
           case 401:

@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-4">
+    <div class="col-12 col-md-4 mb-3">
         <div class="card">
             <img src="{{member().photoUrl || './assets/user.png'}}" alt="{{member().knownAs}}"
                 class="card-img-top img-thumbnail">
@@ -37,7 +37,7 @@
             </div>
         </div>
     </div>
-    <div class="col-8">
+    <div class="col-12 col-md-8 mb-3">
         <tabset class="member-tabset" #memberTabs>
             <tab heading="About {{member().knownAs}}" (selectTab)="onTabActivated($event)">                
                 <div>
@@ -60,18 +60,34 @@
                 <p>{{member().interests}}</p>
             </tab>
             <tab heading="Photos" #photoTab="tab" (selectTab)="onTabActivated($event)">                                
-                 @if(photoTab.active){
-                     <gallery [items]="galleryImages" class="gallery"></gallery>
+                 @if(photoTab.active){                     
+                     @if (user()?.roles?.includes('Admin')) {                                                              
+                        <div class="row mt-3">  
+                            <div class="d-flex flex-wrap justify-content-end gap-2 mb-2">
+                                <button mat-fab extended (click)="openDialogAddPhoto()">
+                                    <mat-icon>add_a_photo</mat-icon>
+                                    Add photos
+                                </button>
+                                <button mat-fab extended (click)="openDialogDeletePhoto()">
+                                    <mat-icon>delete</mat-icon>
+                                    Delete photos
+                                </button>
+                            </div>                                                                 
+                        </div>                                           
+                     }
+                     <div class="flex mb-2 d-flex-row justify-content-center">
+                        <gallery [items]="galleryImages" class="gallery"></gallery>                    
+                    </div> 
                  }
             </tab>
             <tab heading="Family members" (selectTab)="onTabActivated($event)">                
                 @for (familyMember of member().familyMembers; track familyMember.id) {
                     <div class="card-familyMember">
                         <div class="row">
-                            <div class="col-4">
+                            <div class="col-12 col-sm-4">
                                 <img src="{{ familyMember!.photoUrl || './assets/user.png' }}" alt="{{ familyMember!.fullName }}" class="card-img">
                             </div>
-                            <div class="col-8 d-flex flex-column">
+                            <div class="col-12 col-sm-8 d-flex flex-column">
                                 <p class="card-text" [ngClass]="{ 'text-success': familyMember.isParent }">
                                     {{familyMember.fullName}}
                                 </p>
@@ -89,8 +105,8 @@
             <tab heading="Calendar" (selectTab)="onTabActivated($event)">                
                 <app-member-calendar [userCalendars]="member().userCalendars"></app-member-calendar>
             </tab>
-            <tab *appHasRole="['Admin', 'Moderator']" heading="Students" (selectTab)="onTabActivated($event)" class="custom-tab-size">                
-                <app-member-list></app-member-list>
+            <tab *appHasRole="['Admin', 'Moderator']" heading="Students" (selectTab)="onTabActivated($event)" class="custom-tab-size">                                        
+                <app-member-list></app-member-list>                
             </tab>
         </tabset>
     </div>

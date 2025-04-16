@@ -11,15 +11,19 @@ public class DataContext(DbContextOptions options) : IdentityDbContext<User, App
     IdentityUserToken<int>>(options)
 {
     public DbSet<UserPhoto> UserPhotos { get; set; }
+    public DbSet<Gallery> Galleries { get; set; }
     public DbSet<Address> Addresses { get; set; }
     public DbSet<FamilyMember> FamilyMembers { get; set; }
     public DbSet<FamilyMemberPhoto> FamilyMemberPhotos { get; set; }
     public DbSet<Tutor> Tutors { get; set; }
-    public DbSet<TutorPhoto> TutorPhotos { get; set; }
-    public DbSet<UserLike> Likes { get; set; }
+    public DbSet<TutorPhoto> TutorPhotos { get; set; }    
     public DbSet<Message> Messages { get; set; }
     public DbSet<Calendar> Calendars { get; set; }    
     public DbSet<UserCalendar> UserCalendars { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
+    public DbSet<UserNotification> UserNotifications { get; set; }
+    public DbSet<Menu> Menus { get; set; }
+    public DbSet<MenuPhoto> MenuPhotos { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<Connection> Connections { get; set; }    
 
@@ -54,20 +58,19 @@ public class DataContext(DbContextOptions options) : IdentityDbContext<User, App
         builder.Entity<UserCalendar>()
             .HasKey(sc => new { sc.UserId, sc.CalendarId });
 
-        builder.Entity<UserLike>()
-            .HasKey(k => new { k.SourceUserId, k.TargetUserId });
+        builder.Entity<Notification>()
+            .HasMany(un => un.UserNotifications)
+            .WithOne(u => u.Notification)
+            .HasForeignKey(un => un.NotificationId)
+            .OnDelete(DeleteBehavior.Restrict)
+            .IsRequired();
 
-        builder.Entity<UserLike>()
-            .HasOne(s => s.SourceUser)
-            .WithMany(l => l.LikedUsers)
-            .HasForeignKey(s => s.SourceUserId)
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<UserNotification>()
+            .HasKey(un => new { un.UserId, un.NotificationId });
 
-        builder.Entity<UserLike>()
-            .HasOne(s => s.TargetUser)
-            .WithMany(l => l.LikedByUsers)
-            .HasForeignKey(s => s.TargetUserId)
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.Entity<Menu>()
+            .HasIndex(m => new { m.DayOfWeek, m.TypeFoodId })
+            .IsUnique();
 
         builder.Entity<Message>()
             .HasOne(x => x.Recipient)
@@ -77,11 +80,7 @@ public class DataContext(DbContextOptions options) : IdentityDbContext<User, App
         builder.Entity<Message>()
             .HasOne(x => x.Sender)
             .WithMany(x => x.MessagesSent)
-            .OnDelete(DeleteBehavior.Restrict);        
-
-        //builder.Entity<FamilyMemberPhoto>().HasQueryFilter(f => f.IsApproved);
-        //builder.Entity<UserPhoto>().HasQueryFilter(u => u.IsApproved);
-        //builder.Entity<TutorPhoto>().HasQueryFilter(t => t.IsApproved);
+            .OnDelete(DeleteBehavior.Restrict);               
 
         
     }

@@ -1,49 +1,76 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
   <div class="container">
-    <a class="navbar-brand" routerLink="/" routerLinkActive="active">Kita App</a>
-    <ul class="navbar-nav me-auto mb-2 mb-md-0">
-      @if (user()) {
-        <ng-container>
-          <li class="nav-item">
-            <a class="nav-link" [routerLink]="['/members', user()?.username]"  routerLinkActive="active">Profile</a>
-          </li>
-          <!-- <li class="nav-item">
-            <a class="nav-link" routerLink="/lists" routerLinkActive="active">Lists</a>
-          </li> -->
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/messages" routerLinkActive="active">Messages</a>
-          </li>
-          <li *appHasRole="['Admin', 'Moderator']" class="nav-item">
-            <a class="nav-link" routerLink="/members" routerLinkActive="active">Students</a>            
-          </li>
-          <li *appHasRole="['Admin', 'Moderator']" class="nav-item">            
-            <a class="nav-link" routerLink="/admin" routerLinkActive="active">Admin</a>
-          </li>
-        </ng-container>
-      }
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/errors" routerLinkActive="active">Errors</a>
-      </li>
-    </ul>
+    <a class="navbar-brand" routerLink="/" routerLinkActive="active">KITA App</a>
+    <button class="navbar-toggler" type="button" (click)="isCollapsed = !isCollapsed">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-    @if (user()) {
-      <div class="dropdown" dropdown>
-        <img src="{{user()?.photoUrl || './assets/user.png'}}" alt="user photo">
-        <a class="dropdown-toggle text-light text-decoration-none ms-2" dropdownToggle>Welcome {{user()?.knownAs}}</a>
-        <div class="dropdown-menu" *dropdownMenu>
-          <a routerLink="/member/edit" class="dropdown-item">Edit Profile</a>
-          <a class="dropdown-item" (click)="logout()">Logout</a>
+    <div [collapse]="isCollapsed" class="collapse navbar-collapse" id="navbarMain">
+      <ul class="navbar-nav me-auto mb-2 mb-md-0">
+        @if (user()) {
+          <ng-container>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['/members', user()?.username]"  routerLinkActive="active">Profile</a>
+            </li>          
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/messages" routerLinkActive="active">Messages</a>
+            </li>
+            <li *appHasRole="['Admin', 'Moderator']" class="nav-item">
+              <a class="nav-link" routerLink="/members" routerLinkActive="active">Students</a>            
+            </li>
+            <li *appHasRole="['Admin', 'Moderator']" class="nav-item dropdown" dropdown>
+              <a class="nav-link dropdown-toggle" id="adminMenu" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false" dropdownToggle>
+                Admin
+              </a>
+              <ul class="dropdown-menu bg-primary" aria-labelledby="adminMenu" *dropdownMenu>
+                <li><a class="dropdown-item ps-3" routerLink="/admin">Users</a></li>
+                <li><a class="dropdown-item ps-3" routerLink="/admin-notification">Notifications</a></li>
+              </ul>
+            </li>           
+          </ng-container>
+        }
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/menu" routerLinkActive="active">Menu</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/errors" routerLinkActive="active">Errors</a>
+        </li>
+      </ul>
+    </div>  
+
+    <div class="d-flex align-items-center ms-auto">
+      @if (user()) {
+        <div class="dropdown" dropdown>
+          <img src="{{user()?.photoUrl || './assets/user.png'}}" alt="user photo">
+          <a class="dropdown-toggle text-light text-decoration-none ms-2" dropdownToggle>Welcome {{user()?.knownAs}}</a>
+          <div class="dropdown-menu" *dropdownMenu>
+            <a routerLink="/member/edit" class="dropdown-item">Edit Profile</a>
+            <a class="dropdown-item" (click)="logout()">Logout</a>
+          </div>
         </div>
-      </div>
-    }
-    @else {
-      <form #loginForm="ngForm" class="d-flex" (ngSubmit)="login()"
-        autocomplete="off">
-        <input name="username" [(ngModel)]="model.username" class="form-control me-2" type="text" placeholder="Username">
-        <input name="password" [(ngModel)]="model.password" class="form-control me-2" type="password"
-          placeholder="Password">
-        <button class="btn btn-success" type="submit">Login</button>
-      </form>
-    }        
+        <div class="ms-3 bell"> 
+          @if (assignedNotificationsCount() > 0) {          
+            <mat-icon matBadge="{{assignedNotificationsCount()}}" (click)="toggleBadgeVisibility()">
+              notifications_active
+            </mat-icon>                
+          } 
+          @else {
+            <mat-icon>
+              notifications_off
+            </mat-icon>
+          }
+        </div>                    
+      }
+      @else {
+        <form #loginForm="ngForm" class="d-flex" (ngSubmit)="login()"
+          autocomplete="off">
+          <input name="username" [(ngModel)]="model.username" class="form-control me-2" type="text" placeholder="Username">
+          <input name="password" [(ngModel)]="model.password" class="form-control me-2" type="password"
+            placeholder="Password">
+          <button class="btn btn-success" type="submit">Login</button>
+        </form>
+      }        
+    </div>
   </div>
 </nav>

@@ -216,6 +216,32 @@ namespace API.Data.Migrations
                     b.ToTable("FamilyMemberPhotos");
                 });
 
+            modelBuilder.Entity("API.Entities.Gallery", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Gallery");
+                });
+
             modelBuilder.Entity("API.Entities.Group", b =>
                 {
                     b.Property<string>("Name")
@@ -224,6 +250,75 @@ namespace API.Data.Migrations
                     b.HasKey("Name");
 
                     b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("API.Entities.Menu", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DayOfWeek")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TypeFoodId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DayOfWeek", "TypeFoodId")
+                        .IsUnique();
+
+                    b.ToTable("Menus");
+                });
+
+            modelBuilder.Entity("API.Entities.MenuPhoto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MenuId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MenuId");
+
+                    b.ToTable("MenuPhotos");
                 });
 
             modelBuilder.Entity("API.Entities.Message", b =>
@@ -271,6 +366,23 @@ namespace API.Data.Migrations
                     b.HasIndex("SenderId");
 
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("API.Entities.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("API.Entities.Tutor", b =>
@@ -467,19 +579,28 @@ namespace API.Data.Migrations
                     b.ToTable("UserCalendars");
                 });
 
-            modelBuilder.Entity("API.Entities.UserLike", b =>
+            modelBuilder.Entity("API.Entities.UserNotification", b =>
                 {
-                    b.Property<int>("SourceUserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TargetUserId")
+                    b.Property<int>("NotificationId")
                         .HasColumnType("int");
 
-                    b.HasKey("SourceUserId", "TargetUserId");
+                    b.Property<DateTime?>("DateRead")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("TargetUserId");
+                    b.Property<bool>("IsDone")
+                        .HasColumnType("bit");
 
-                    b.ToTable("Likes");
+                    b.Property<DateTime?>("NotificationSent")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId", "NotificationId");
+
+                    b.HasIndex("NotificationId");
+
+                    b.ToTable("UserNotifications");
                 });
 
             modelBuilder.Entity("API.Entities.UserPhoto", b =>
@@ -499,9 +620,6 @@ namespace API.Data.Migrations
                     b.Property<string>("PublicId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -513,7 +631,7 @@ namespace API.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("StudentPhotos");
+                    b.ToTable("UserPhotos");
                 });
 
             modelBuilder.Entity("API.Entities.UserRole", b =>
@@ -659,6 +777,17 @@ namespace API.Data.Migrations
                     b.Navigation("FamilyMember");
                 });
 
+            modelBuilder.Entity("API.Entities.MenuPhoto", b =>
+                {
+                    b.HasOne("API.Entities.Menu", "Menu")
+                        .WithMany("MenuPhotos")
+                        .HasForeignKey("MenuId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Menu");
+                });
+
             modelBuilder.Entity("API.Entities.Message", b =>
                 {
                     b.HasOne("API.Entities.User", "Recipient")
@@ -717,23 +846,23 @@ namespace API.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("API.Entities.UserLike", b =>
+            modelBuilder.Entity("API.Entities.UserNotification", b =>
                 {
-                    b.HasOne("API.Entities.User", "SourceUser")
-                        .WithMany("LikedUsers")
-                        .HasForeignKey("SourceUserId")
+                    b.HasOne("API.Entities.Notification", "Notification")
+                        .WithMany("UserNotifications")
+                        .HasForeignKey("NotificationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.User", "User")
+                        .WithMany("UserNotifications")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Entities.User", "TargetUser")
-                        .WithMany("LikedByUsers")
-                        .HasForeignKey("TargetUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.Navigation("Notification");
 
-                    b.Navigation("SourceUser");
-
-                    b.Navigation("TargetUser");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("API.Entities.UserPhoto", b =>
@@ -822,6 +951,16 @@ namespace API.Data.Migrations
                     b.Navigation("Connections");
                 });
 
+            modelBuilder.Entity("API.Entities.Menu", b =>
+                {
+                    b.Navigation("MenuPhotos");
+                });
+
+            modelBuilder.Entity("API.Entities.Notification", b =>
+                {
+                    b.Navigation("UserNotifications");
+                });
+
             modelBuilder.Entity("API.Entities.Tutor", b =>
                 {
                     b.Navigation("TutorPhotos");
@@ -835,15 +974,13 @@ namespace API.Data.Migrations
 
                     b.Navigation("FamilyMembers");
 
-                    b.Navigation("LikedByUsers");
-
-                    b.Navigation("LikedUsers");
-
                     b.Navigation("MessagesReceived");
 
                     b.Navigation("MessagesSent");
 
                     b.Navigation("UserCalendars");
+
+                    b.Navigation("UserNotifications");
 
                     b.Navigation("UserPhotos");
 

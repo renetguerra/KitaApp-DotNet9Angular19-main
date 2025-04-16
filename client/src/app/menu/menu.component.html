@@ -1,0 +1,71 @@
+<div class="menu-container">
+    <div class="menu-left">
+        <img src="./assets/menu/menu.webp" alt="Menú Semanal Logo">
+        <h1>WEEKLY MENU</h1>
+        <p>Lunch is an eating occasion that takes place at a specific time and includes specific prepared foods.</p>
+    </div>
+    <div class="menu-right">
+        @for (day of weekDays; track $index) {
+            <div class="day left">    
+                <div class="day-content">
+                    <h1 class="day-label">{{ day.label }}</h1>                   
+                </div>                                      
+                <cdk-accordion class="accordion right">
+                    @for (menu of getMenusByDay(day.name); track menu.id) {
+                        <cdk-accordion-item #accordionItem="cdkAccordionItem" class="accordion-item" [expanded]="menu.typeFoodId == 2">
+                            <button
+                            class="accordion-item-header"
+                            (click)="accordionItem.toggle()"
+                            tabindex="0"
+                            [attr.id]="'accordion-header-' + menu.id"
+                            [attr.aria-expanded]="accordionItem.expanded"
+                            [attr.aria-controls]="'accordion-body-' + menu.id">
+                            {{ menu.typeFoodId == 1 ? 'Breakfast' : menu.typeFoodId == 2 ? 'Lunch' : 'Snack' }}
+                            <span class="accordion-item-description">                                
+                                @if (accordionItem.expanded) {          
+                                    <mat-icon>
+                                        arrow_drop_up
+                                    </mat-icon>                
+                                  } 
+                                  @else {
+                                    <mat-icon>
+                                        arrow_drop_down
+                                    </mat-icon>
+                                  }
+                            </span>
+                            </button>
+                            @if(accordionItem.expanded) {
+                                <div
+                                  class="accordion-item-body"
+                                  role="region"
+                                  [style.display]="accordionItem.expanded ? '' : 'none'"
+                                  [attr.id]="'accordion-body-' + menu.id"
+                                  [attr.aria-labelledby]="'accordion-header-' + menu.id"
+                                >                                
+                                    <div class="day-content">
+                                        <mat-card class="card" appearance="outlined">                    
+                                            <mat-card-title-group class="flex-inline">
+                                                <mat-card-title class="mt-3 card-title">{{ menu.title }}</mat-card-title>                        
+                                                <img mat-card-lg-image [src]="getImageByTitleAndType(menu.imageName, menu.typeFoodId)" alt="menu.title">
+                                            </mat-card-title-group>                    
+                                            <mat-card-content>
+                                                <p>{{ menu.description }}</p>
+                                            </mat-card-content>
+                                            
+                                            <mat-card-actions>
+                                                @if (user().roles.includes('Admin')) {
+                                                    <button mat-button (click)="openDialogEditNotification(menu)">Edit</button>                                                      
+                                                }
+                                            </mat-card-actions>
+                                        </mat-card>                                                                                        
+                                    </div>
+                                </div>
+                            }
+                        </cdk-accordion-item>                                                
+                    }  
+                </cdk-accordion>                                       
+            </div>
+            <mat-divider class="mb-2"></mat-divider>
+        }                
+    </div>
+</div>

@@ -31,7 +31,14 @@ public class AutoMapperProfiles : Profile
 
         CreateMap<Calendar, CalendarDto>();
         CreateMap<CalendarDto, Calendar>();
-        CreateMap<UserCalendar, UserCalendarDto>();        
+        CreateMap<UserCalendar, UserCalendarDto>();
+
+        CreateMap<Notification, NotificationDto>();
+        CreateMap<NotificationDto, Notification>();
+        CreateMap<UserNotification, UserNotificationDto>();
+
+        CreateMap<Menu, MenuDto>();
+        CreateMap<MenuDto, Menu>();
 
         CreateMap<MemberUpdateDto, User>();
         CreateMap<RegisterDto, User>();

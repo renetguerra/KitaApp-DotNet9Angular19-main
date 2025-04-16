@@ -12,6 +12,8 @@ import { MemberDetailComponent } from "./members/member-detail/member-detail.com
 import { MemberEditComponent } from "./members/member-edit/member-edit.component";
 import { MemberListComponent } from "./members/member-list/member-list.component";
 import { MessagesComponent } from "./messages/messages.component";
+import { MenuComponent } from "./menu/menu.component";
+import { AdminNotificationComponent } from "./admin/admin-notification/admin-notification.component";
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -25,8 +27,10 @@ export const routes: Routes = [
             { path: 'member/edit', component: MemberEditComponent, canDeactivate: [preventUnsavedChangesGuard] },            
             { path: 'messages', component: MessagesComponent },
             { path: 'admin', component: AdminPanelComponent, canActivate: [adminGuard] },
+            { path: 'admin-notification', component: AdminNotificationComponent, canActivate: [adminGuard] },
         ]
     },
+    { path: 'menu', component: MenuComponent },
     { path: 'errors', component: TestErrorsComponent },
     { path: 'not-found', component: NotFoundComponent },
     { path: 'server-error', component: ServerErrorComponent },

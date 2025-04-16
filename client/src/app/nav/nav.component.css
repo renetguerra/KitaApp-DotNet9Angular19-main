@@ -7,3 +7,17 @@ img {
     border: 2px solid white;
     display: inline;
 }
+
+.bell {
+    margin-left: 10px;
+}
+
+.d-flex {
+    position: absolute;
+    top: 0;
+    right: 20%;
+  }
+
+.dropdown-item:hover {    
+    background-color: #99dfc1 !important;
+}

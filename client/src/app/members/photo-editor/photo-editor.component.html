@@ -1,4 +1,4 @@
-@if (member()) {
+<!-- @if (member() && member()?.username === user().username!) {
     <div class="row">
         @for (photo of member()?.userPhotos; track photo.id) {
             <div class="col-2 mb-1">
@@ -21,72 +21,77 @@
             </div>
         }    
     </div>
-}
+} -->
+<h3 mat-dialog-title>Add Photos</h3>
+<mat-dialog-content >
+    <div class="row mt-3">
+    
+        <div class="col-md-6">
 
-<div class="row mt-3">
- 
-    <div class="col-md-3">
+            <h3>Add Photos</h3>
 
-        <h3>Add Photos</h3>
+            <div ng2FileDrop
+                [ngClass]="{'nv-file-over': hasBaseDropzoneOver}"
+                (fileOver)="fileOverBase($event)"
+                [uploader]="uploader()"
+                class="card bg-faded p-3 text-center mb-3 my-drop-zone">
+                <i class="fa fa-upload fa-3x"></i>
+                Drop photos here
+            </div>
 
-        <div ng2FileDrop
-             [ngClass]="{'nv-file-over': hasBaseDropzoneOver}"
-             (fileOver)="fileOverBase($event)"
-             [uploader]="uploader()"
-             class="card bg-faded p-3 text-center mb-3 my-drop-zone">
-             <i class="fa fa-upload fa-3x"></i>
-            Drop photos here
+            Multiple
+            <input type="file" ng2FileSelect [uploader]="uploader()" multiple  /><br/>
+
+            Single
+            <input type="file" ng2FileSelect [uploader]="uploader()" />
         </div>
 
-        Multiple
-        <input type="file" ng2FileSelect [uploader]="uploader()" multiple  /><br/>
-
-        Single
-        <input type="file" ng2FileSelect [uploader]="uploader()" />
-    </div>
-
-    @if (uploader()?.queue?.length) {
-        <div class="col-md-9" style="margin-bottom: 40px">
-            <h3>Upload queue</h3>
-            <p>Queue length: {{ uploader()?.queue?.length }}</p>    
-            <table class="table">
-                <thead>
-                <tr>
-                    <th width="50%">Name</th>
-                    <th>Size</th>
-                </tr>
-                </thead>
-                <tbody>
-                @for (item of uploader()?.queue; track $index) {
+        @if (uploader()?.queue?.length) {
+            <div class="col-md-9" style="margin-bottom: 40px">
+                <h3>Upload queue</h3>
+                <p>Queue length: {{ uploader()?.queue?.length }}</p>    
+                <table class="table">
+                    <thead>
                     <tr>
-                        <td><strong>{{ item?.file?.name }}</strong></td>
-                        @if (uploader()?.options?.isHTML5) {
-                            <td nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
-                        }
+                        <th width="50%">Name</th>
+                        <th>Size</th>
                     </tr>
-                }                
-                </tbody>
-            </table>    
-            <div>
+                    </thead>
+                    <tbody>
+                    @for (item of uploader()?.queue; track $index) {
+                        <tr>
+                            <td><strong>{{ item?.file?.name }}</strong></td>
+                            @if (uploader()?.options?.isHTML5) {
+                                <td nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+                            }
+                        </tr>
+                    }                
+                    </tbody>
+                </table>    
                 <div>
-                    Queue progress:
-                    <div class="progress">
-                        <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader()?.progress + '%' }"></div>
+                    <div>
+                        Queue progress:
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader()?.progress + '%' }"></div>
+                        </div>
                     </div>
-                </div>
-                <button type="button" class="btn btn-success btn-s"
-                        (click)="uploader()?.uploadAll()" [disabled]="!uploader()?.getNotUploadedItems()?.length">
-                    <span class="fa fa-upload"></span> Upload all
-                </button>
-                <button type="button" class="btn btn-warning btn-s"
-                        (click)="uploader()?.cancelAll()" [disabled]="!uploader()?.isUploading">
-                    <span class="fa fa-ban"></span> Cancel all
-                </button>
-                <button type="button" class="btn btn-danger btn-s"
-                        (click)="uploader()?.clearQueue()" [disabled]="!uploader()?.queue?.length">
-                    <span class="fa fa-trash"></span> Remove all
-                </button>
-            </div>    
-        </div>
-    }    
-</div>
+                    <button type="button" class="btn btn-success btn-s"
+                            (click)="uploader()?.uploadAll()" [disabled]="!uploader()?.getNotUploadedItems()?.length">
+                        <span class="fa fa-upload"></span> Upload all
+                    </button>
+                    <button type="button" class="btn btn-warning btn-s"
+                            (click)="uploader()?.cancelAll()" [disabled]="!uploader()?.isUploading">
+                        <span class="fa fa-ban"></span> Cancel all
+                    </button>
+                    <button type="button" class="btn btn-danger btn-s"
+                            (click)="uploader()?.clearQueue()" [disabled]="!uploader()?.queue?.length">
+                        <span class="fa fa-trash"></span> Remove all
+                    </button>
+                </div>    
+            </div>
+        }    
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>    
+</mat-dialog-actions>

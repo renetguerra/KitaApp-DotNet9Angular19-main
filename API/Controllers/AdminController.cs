@@ -1,6 +1,10 @@
 ﻿using API.Controllers;
+using API.Data;
+using API.DTOs;
 using API.Entities;
+using API.Extensions;
 using API.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API;
 
-public class AdminController(UserManager<User> userManager, IUnitOfWork unitOfWork,
+public class AdminController(UserManager<User> userManager, IUnitOfWork unitOfWork, DataContext context, IMapper mapper,
     IPhotoService photoService) : BaseApiController
 {
     [Authorize(Policy = "RequireAdminRole")]
@@ -51,6 +55,33 @@ public class AdminController(UserManager<User> userManager, IUnitOfWork unitOfWo
         if (!result.Succeeded) return BadRequest("Failed to remove from roles");
 
         return Ok(await userManager.GetRolesAsync(user));
+    }    
+
+    [Authorize(Policy = "RequireAdminRole")]
+    [HttpPost("create-notifications/{username}")]
+    public async Task<ActionResult> CreateNotifications(string username, List<Notification> notifications)
+    {
+        if (notifications.Count == 0) return BadRequest("you must select at least one notification");
+        
+        var user = await userManager.FindByNameAsync(username);
+
+        if (user == null) return BadRequest("User not found");
+
+        foreach (var notification in notifications)
+        {                       
+            var userNotifiaction = new UserNotification
+            {
+                UserId = user.Id,
+                NotificationId = notification.Id,
+                NotificationSent = DateTime.Now,
+                IsDone = false
+            };
+            context.UserNotifications.Add(userNotifiaction);
+        }
+
+        if (await unitOfWork.Complete()) return Ok(mapper.Map<List<NotificationDto>>(notifications));
+
+        return BadRequest("Failed to save calendar");
     }
 
     [HttpPost("update-can-send-messages/{username}")]

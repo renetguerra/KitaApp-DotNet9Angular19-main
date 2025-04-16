@@ -14,7 +14,9 @@ public static class ApplicationServiceExtensions
     {
         services.AddControllers().AddJsonOptions(options =>
         {
-            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());            
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            //options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            //options.JsonSerializerOptions.WriteIndented = true;
         });
         services.AddDbContext<DataContext>(opt =>
         {
@@ -25,7 +27,10 @@ public static class ApplicationServiceExtensions
         services.AddScoped<IUserRepository, UserRepository>();        
         services.AddScoped<IMessageRepository, MessageRepository>();
         services.AddScoped<ICalendarRepository, CalendarRepository>();
+        services.AddScoped<INotificationRepository, NotificationRepository>();
+        services.AddScoped<IMenuRepository, MenuRepository>();
         services.AddScoped<IUserPhotoRepository, UserPhotoRepository>();
+        services.AddScoped<IGalleryRepository, GalleryRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IPhotoService, PhotoService>();
         services.AddScoped<LogUserActivity>();

@@ -6,12 +6,12 @@
 <div class="container mt-3">
   <form
     #form="ngForm"
-    class="d-flex mb-3"
+    class="row gy-2 gx-3 align-items-center mb-3"
     (ngSubmit)="loadMembers()"
     autocomplete="off"
   >
-    <div class="d-flex mx-2">
-      <label class="col-form-label">Age from: </label>
+    <div class="col-12 col-sm-auto">
+      <label class="form-label me-2">Age from: </label>
       <input
         type="number"
         class="form-control ms-1"
@@ -21,8 +21,8 @@
         (ngModelChange)="userParams() && (userParams()!.minAge = $event)"
       />
     </div>
-    <div class="d-flex px-2">
-      <label class="col-form-label">Age to: </label>
+    <div class="col-12 col-sm-auto">
+      <label class="form-label me-2">Age to: </label>
       <input
         type="number"
         class="form-control ms-1"
@@ -33,8 +33,8 @@
       />
     </div>
 
-    <div class="d-flex px-2">
-      <label class="col-form-label me-2">Show: </label>
+    <div class="col-12 col-sm-auto">
+      <label class="form-label me-2">Show: </label>
       <select
         name="gender"
         style="width: 130px"
@@ -50,11 +50,14 @@
       </select>
     </div>
 
-    <button class="btn btn-primary ms-1" type="submit">Apply Filters</button>
-    <button (click)="resetFilters()" class="btn btn-info ms-1" type="submit">
-      Reset Filters
-    </button>
-    <div class="col">
+    <div class="col-12 col-sm-auto">
+      <button class="btn btn-primary me-2" type="submit">Apply Filters</button>
+      <button (click)="resetFilters()" class="btn btn-info ms-1" type="submit">
+        Reset Filters
+      </button>
+    </div>
+    
+    <div class="col-12 col-sm-auto ms-auto">
       <div class="btn-group float-end">
         <button
           type="button"
@@ -84,7 +87,7 @@
 
 <div class="row">
   @for (member of members() | paginate: { itemsPerPage: pagination()?.itemsPerPage , currentPage: pagination()?.currentPage, totalItems: pagination()?.totalItems }; track member.id) {
-  <div class="col-2">
+  <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-3">
     <app-member-card [member]="member"></app-member-card>
   </div>
   }

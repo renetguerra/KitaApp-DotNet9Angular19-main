@@ -22,12 +22,28 @@ import { CalendarService } from 'src/app/_services/calendar.service';
 import { Calendar } from 'src/app/_models/calendar';
 import { MemberListComponent } from '../member-list/member-list.component';
 import { HasRoleDirective } from 'src/app/_directives/has-role.directive';
+import { UserNotification } from 'src/app/_models/userNotification';
+import { NotificationService } from 'src/app/_services/notification.service';
+import { Notification } from 'src/app/_models/notification';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { NotificationSheetComponent } from 'src/app/sheet/notification-sheet/notification-sheet.component';
+import { PhotoEditorComponent } from '../photo-editor/photo-editor.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { GalleryService } from 'src/app/_services/gallery.service';
+import { GalleryPhotoEditorComponent } from 'src/app/gallery-photo-editor/gallery-photo-editor.component';
+import { GalleryPhotoDeleteComponent } from 'src/app/gallery-photo-delete/gallery-photo-delete.component';
+import { PhotoDeleteComponent } from '../photo-delete/photo-delete.component';
 
 @Component({
     selector: 'app-member-detail',
     templateUrl: './member-detail.component.html',
     styleUrls: ['./member-detail.component.css'],
-    imports: [CommonModule, TabsModule, GalleryModule, TimeagoModule, MemberMessagesComponent, MemberCalendarComponent, MemberListComponent, HasRoleDirective]
+    imports: [CommonModule, TabsModule, GalleryModule, TimeagoModule, 
+        MemberMessagesComponent, MemberCalendarComponent, MemberListComponent, 
+        MatDialogModule, MatIconModule, MatButtonModule,
+        HasRoleDirective]
 })
 export class MemberDetailComponent implements OnInit, OnDestroy {  
   // @ViewChild('memberTabs', { static: true }) memberTabs?: TabsetComponent;
@@ -53,8 +69,14 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
   private messageService = inject(MessageService);
   private calendarService = inject(CalendarService);
   public presenceService = inject(PresenceService);
-  private toastr = inject(ToastrService);
-  private cdr = inject(ChangeDetectorRef);
+  
+  private _bottomSheet = inject(MatBottomSheet);
+  assignedNotifications = signal<UserNotification[]>([]);
+  private notificationService = inject(NotificationService);
+  
+  galleryPhotos = signal<Photo[]>([]);
+
+  readonly dialog = inject(MatDialog);
 
   constructor(private router: Router, private route: ActivatedRoute) {
     this.user.set(this.accountService.currentUser()!);
@@ -78,6 +100,9 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
         params['tab'] && this.selectTab(params['tab'])
       }
     })    
+
+    if (this.user())      
+      this.getAssignedNotifications();    
 
   }
 
@@ -111,7 +136,8 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
         canSendMessages: member.canSendMessages,       
         userPhotos: member.userPhotos,
         familyMembers: member.familyMembers,
-        userCalendars: member.userCalendars
+        userCalendars: member.userCalendars,
+        userNotifications: member.userNotifications,
     });   
   }
 
@@ -154,13 +180,12 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
     } else {
       this.messageService.stopHubConnection();
     }
-  }
+  } 
 
   getImages() {
-    if (!this.member()) return;
-    for (const photo of this.member()?.userPhotos) {
-      this.galleryImages.push(new ImageItem({ src: photo.url, thumb: photo.url }));
-    }
+    this.galleryImages = this.member()?.userPhotos.map(photo => 
+      new ImageItem({ src: photo.url, thumb: photo.url })
+    );
   }
 
   getFamilyMembersImages() {
@@ -189,6 +214,44 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
        }
       }
     });      
-  }    
+  }
+
+  getAssignedNotifications() {        
+    this.notificationService.getAssignedNotifications(this.user()?.username!).subscribe({
+      next: notifications => {
+        if (notifications.length > 0) {
+          this.assignedNotifications.set(notifications);
+          const config = {            
+            disableClose: true,
+            data: {
+              username: this.user()?.username!,
+              assignedNotifications: this.assignedNotifications()              
+            }
+          }
+          this._bottomSheet.open(NotificationSheetComponent, config);        
+        }        
+      }
+    })
+  }
+  
+  openDialogAddPhoto() {
+    const dialogRef = this.dialog.open(PhotoEditorComponent, {
+      data: this.member()
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.getImages();
+    });
+  }
+  
+  openDialogDeletePhoto() {    
+    const dialogRef = this.dialog.open(PhotoDeleteComponent, {
+      data: this.member()
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.getImages();
+    });
+  }
 
 }

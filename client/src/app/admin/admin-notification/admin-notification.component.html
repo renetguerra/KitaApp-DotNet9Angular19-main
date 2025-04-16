@@ -1,0 +1,19 @@
+<div class="mt-3">
+    <h2>Admin notification</h2>
+    <div class="tab-panel">
+        <tabset class="member-tabset">
+            <tab heading="Notification management" *appHasRole="['Admin']">
+                <div class="container">
+                    <div class="flex justify-content-end mb-2 d-flex-row">
+                        <!-- <button mat-fab extended (click)="openDialogAdd()">
+                            <mat-icon>add</mat-icon> Add notification                
+                        </button>  -->
+                    </div>
+                    <div class="flex-row">
+                        <app-notification-management/>
+                    </div>                    
+                </div>
+            </tab>          
+        </tabset>
+    </div>
+</div>

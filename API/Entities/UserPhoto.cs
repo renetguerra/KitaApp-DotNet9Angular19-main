@@ -2,11 +2,11 @@
 
 namespace API.Entities
 {
-    [Table("StudentPhotos")]
+    [Table("UserPhotos")]
     public class UserPhoto : Photo
     {
         public int Id { get; set; }
-        public int StudentId { get; set; }
+        public int UserId { get; set; }
         public virtual User User { get; set; } = null!;        
     }
 }

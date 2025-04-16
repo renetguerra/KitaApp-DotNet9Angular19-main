@@ -61,10 +61,10 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper,
         return BadRequest("Failed to update the user");
     }
 
-    [HttpPost("add-photo")]
-    public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
-    {
-        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+    [HttpPost("add-photo/{username}")]
+    public async Task<ActionResult<PhotoDto>> AddPhoto(string username, IFormFile file)
+    {        
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
 
         if (user == null) return BadRequest("Cannot update user");
 
@@ -107,10 +107,10 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper,
         return BadRequest("Problem setting main photo");
     }
 
-    [HttpDelete("delete-photo/{photoId:int}")]
-    public async Task<ActionResult> DeletePhoto(int photoId)
+    [HttpDelete("delete-photo/{username}")]
+    public async Task<ActionResult> DeletePhoto(string username, int photoId)
     {
-        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername());
+        var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(username);
 
         if (user == null) return BadRequest("User not found");
 
@@ -124,9 +124,9 @@ public class UsersController(IUnitOfWork unitOfWork, IMapper mapper,
             if (result.Error != null) return BadRequest(result.Error.Message);
         }
 
-        var studentPhoto = user.UserPhotos.FirstOrDefault(x => x.Id == photoId);
-        if (studentPhoto == null) return BadRequest("This photo is not in the user's photos");
-        user.UserPhotos.Remove(studentPhoto);
+        var userPhoto = user.UserPhotos.FirstOrDefault(x => x.Id == photoId);
+        if (userPhoto == null) return BadRequest("This photo is not in the user's photos");
+        user.UserPhotos.Remove(userPhoto);
 
         if (await unitOfWork.Complete()) return Ok();
 

@@ -7,20 +7,26 @@ import { MembersService } from 'src/app/_services/members.service';
 import { environment } from 'src/environments/environment';
 import { NgClass, NgStyle, DecimalPipe } from '@angular/common';
 import { Photo } from 'src/app/_models/photo';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
     selector: 'app-photo-editor',
     templateUrl: './photo-editor.component.html',
     styleUrls: ['./photo-editor.component.css'],
-    imports: [NgClass, FileUploadModule, NgStyle, DecimalPipe]
+    imports: [NgClass, FileUploadModule, NgStyle, DecimalPipe, MatDialogModule, MatButtonModule]
 })
 export class PhotoEditorComponent implements OnInit {
   private accountService = inject(AccountService);  
-  member = input<Member | undefined>();
+
   uploader = signal<FileUploader | undefined>(undefined);
   hasBaseDropzoneOver = false;
   baseUrl = environment.apiUrl;
   user = signal<User>(this.accountService.currentUser()!);
+
+  readonly dialogRef = inject(MatDialogRef<PhotoEditorComponent>);
+  readonly data = inject<Member>(MAT_DIALOG_DATA);
+  member = input<Member | undefined>(this.data);
 
   constructor(private memberService: MembersService) {}
 
@@ -30,38 +36,12 @@ export class PhotoEditorComponent implements OnInit {
 
   fileOverBase(e: any) {
     this.hasBaseDropzoneOver = e;
-  }
-
-  setMainPhoto(photo: Photo) {
-    this.memberService.setMainPhoto(photo.id).subscribe({
-      next: _ => {
-        if (this.user() && this.member()) {
-          this.user().photoUrl = photo.url;
-          this.accountService.setCurrentUser(this.user());
-          this.member()!.photoUrl = photo.url;
-          this.member()!.userPhotos.forEach(p => {
-            if (p.isMain) p.isMain = false;
-            if (p.id === photo.id) p.isMain = true;
-          })
-        }
-      }
-    })
-  }
-
-  deletePhoto(photoId: number) {
-    this.memberService.deletePhoto(photoId).subscribe({
-      next: _ => {
-        if (this.member()) {
-          this.member()!.userPhotos = this.member()!.userPhotos.filter(x => x.id !== photoId)
-        }
-      }
-    })
-  }
+  }  
 
   initializeUploader() {
     this.uploader.set(
       new FileUploader({
-        url: this.baseUrl + 'users/add-photo',
+        url: this.baseUrl + 'users/add-photo/' + this.member()!.username,
         authToken: 'Bearer ' + this.user()?.token,
         isHTML5: true,
         allowedFileType: ['image'],
@@ -82,8 +62,9 @@ export class PhotoEditorComponent implements OnInit {
         if (photo.isMain && this.user() && this.member()) {
           this.user().photoUrl = photo.url;
           this.member()!.photoUrl = photo.url;
-          this.accountService.setCurrentUser(this.user());
+          this.accountService.setCurrentUser(this.user());          
         }
+        this.dialogRef.close();
       }
     }
   }

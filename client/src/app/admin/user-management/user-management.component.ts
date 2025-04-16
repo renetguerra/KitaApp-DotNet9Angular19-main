@@ -32,8 +32,7 @@ export class UserManagementComponent implements OnInit {
   getUsersWithRoles() {
     this.adminService.getUsersWithRoles().subscribe({
       next: users => {
-        this.users.set(users);
-        console.log(users);
+        this.users.set(users);        
 
         const messagePermissions: { [username: string]: boolean } = {};
         users.forEach(user => {

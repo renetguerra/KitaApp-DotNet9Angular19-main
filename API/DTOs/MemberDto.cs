@@ -21,4 +21,5 @@ public class MemberDto
     public List<FamilyMemberDto>? FamilyMembers { get; set; }
     public List<PhotoDto>? UserPhotos { get; set; }
     public List<UserCalendarDto>? UserCalendars { get; set; }
+    public List<UserNotificationDto>? UserNotifications { get; set; }
 }

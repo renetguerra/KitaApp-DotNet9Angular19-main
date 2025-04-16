@@ -40,9 +40,7 @@ export class MemberMessagesComponent implements OnInit {
   ngOnInit(): void {    
     this.memberService.getMember(this.username()!).subscribe({
       next: member => {
-        this.student.set(member);    
-        console.log('Student:', this.student());
-
+        this.student.set(member);            
       }
     });    
   }

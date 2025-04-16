@@ -6,17 +6,17 @@
             </div>
         }
         @else {
-            <ul #scrollMe style="overflow: scroll; height: 500px;" [scrollTop]="scrollMe.scrollHeight" class="chat">
+            <ul #scrollMe style="max-height: 500px;" [scrollTop]="scrollMe.scrollHeight" class="chat overflow-auto">
                 @for (message of (messageService.messageThread$ | async); track message.id) {
-                    <li>
-                        <div>
-                            <span class="chat-img float-end">
-                                <img class="rounded-circle" 
+                    <li class="mb-3">
+                        <div class="d-flex flex-column flex-sm-row align-items-sm-start gap-2">
+                            <span class="chat-img float-end d-none d-sm-inline">
+                                <img class="rounded-circle img-fluid" 
                                     src="{{message.senderPhotoUrl || './assets/user.png'}}" 
                                     alt="image of user">
                             </span>
-                            <div class="chat-body">
-                                <div class="header">
+                            <div class="chat-body flex-grow-1">
+                                <div class="header d-flex justify-content-between">
                                     <small class="text-muted">
                                         <span class="fa fa-clock-o">{{message.messageSent | timeago}}</span>
                                         @if (!message.dateRead && message.senderUsername !== username()!) {
@@ -27,7 +27,7 @@
                                         }                                                                                
                                     </small>
                                 </div>
-                                <p>{{message.content}}</p>
+                                <p class="mb-1">{{message.content}}</p>
                             </div>
                         </div>
                     </li>

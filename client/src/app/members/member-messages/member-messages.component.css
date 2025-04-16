@@ -17,3 +17,29 @@
 .rounded-circle {
     max-height: 50px;
 }
+
+@media (max-width: 600px) {
+    .chat-body {
+      font-size: 14px;
+    }
+  
+    .chat-img {
+      display: none;
+    }
+  
+    .input-group {
+      flex-direction: column;
+    }
+  
+    .input-group .form-control {
+      margin-bottom: 8px;
+    }
+  
+    .input-group-append {
+      width: 100%;
+    }
+  
+    .input-group-append .btn {
+      width: 100%;
+    }
+}
