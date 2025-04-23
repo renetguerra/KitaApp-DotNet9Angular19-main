@@ -1,7 +1,7 @@
-<div (contextmenu)="onDateSelectedToAction()">
+<div (contextmenu)="onContextMenu()">
   <mat-card class="demo-inline-calendar-card" [appCalendarContextMenu]="menuTrigger" [matMenuTriggerFor]="menu">    
     <mat-card-content>
-      <mat-calendar #calendar (monthSelected)="addTooltips()" [dateClass]="customDateClass" [(selected)]="selected" 
+      <mat-calendar #calendar (monthSelected)="calendarStore.addTooltips()" [dateClass]="customDateClass" [(selected)]="selected" 
           (selectedChange)="onDateSelected($event)" >
       </mat-calendar>    
     </mat-card-content>

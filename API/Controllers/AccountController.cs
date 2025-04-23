@@ -51,7 +51,8 @@ public class AccountController(UserManager<User> userManager, ITokenService toke
             KnownAs = user.KnownAs,
             Token = await tokenService.CreateToken(user),
             Gender = user.Gender,
-            PhotoUrl = user.UserPhotos.FirstOrDefault(x => x.IsMain)?.Url
+            PhotoUrl = user.UserPhotos.FirstOrDefault(x => x.IsMain)?.Url,
+            CanSendMessages = user.CanSendMessages
         };
     }
 

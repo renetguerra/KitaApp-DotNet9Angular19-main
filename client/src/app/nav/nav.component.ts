@@ -68,6 +68,10 @@ export class NavComponent implements OnInit {
           this.assignedNotifications.set(notifications);
           this.assignedNotificationsCount.set(notifications.length);                  
         }        
+        else {
+          this.assignedNotifications.set([]);
+          this.assignedNotificationsCount.set(0);
+        }
       }
     })
   }

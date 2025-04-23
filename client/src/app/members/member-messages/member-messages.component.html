@@ -1,13 +1,13 @@
 <div class="card">
     <div class="card-body">               
-        @if ((messageService.messageThread$ | async)?.length === 0) {
+        @if (messageStore.thread().length === 0) {
             <div>
                 No messages yet... say hi by using the message box below
             </div>
         }
         @else {
             <ul #scrollMe style="max-height: 500px;" [scrollTop]="scrollMe.scrollHeight" class="chat overflow-auto">
-                @for (message of (messageService.messageThread$ | async); track message.id) {
+                @for (message of messageStore.thread(); track message.id) {
                     <li class="mb-3">
                         <div class="d-flex flex-column flex-sm-row align-items-sm-start gap-2">
                             <span class="chat-img float-end d-none d-sm-inline">
@@ -18,12 +18,14 @@
                             <div class="chat-body flex-grow-1">
                                 <div class="header d-flex justify-content-between">
                                     <small class="text-muted">
-                                        <span class="fa fa-clock-o">{{message.messageSent | timeago}}</span>
+                                        <span class="fa fa-clock-o">
+                                            {{ message?.messageSent ? (message.messageSent | timeago) : 'just now' }}
+                                        </span>
                                         @if (!message.dateRead && message.senderUsername !== username()!) {
                                             <span class="text-danger">(unread)</span>
                                         }
                                         @else {
-                                            <span class="text-success">(read {{message.dateRead | timeago}})</span>
+                                            <span class="text-success">(read {{ message.dateRead ? (message.dateRead | timeago) : '' }})</span>
                                         }                                                                                
                                     </small>
                                 </div>
@@ -37,7 +39,7 @@
         }            
     </div>
 
-    @if (student()?.canSendMessages) {
+    @if (user()?.canSendMessages) {
         <div class="card-footer">
             <form #messageForm="ngForm" (ngSubmit)="sendMessage()" autocomplete="off">
                 <div class="input-group">

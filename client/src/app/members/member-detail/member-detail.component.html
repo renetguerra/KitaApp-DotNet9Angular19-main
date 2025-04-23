@@ -1,33 +1,33 @@
 <div class="row">
     <div class="col-12 col-md-4 mb-3">
         <div class="card">
-            <img src="{{member().photoUrl || './assets/user.png'}}" alt="{{member().knownAs}}"
+            <img src="{{member()?.photoUrl || './assets/user.png'}}" alt="{{member()?.knownAs}}"
                 class="card-img-top img-thumbnail">
             <div class="card-body">
-                @if ((presenceService.onlineUsers$ | async)?.includes(member().username)) {
+                @if ((presenceService.onlineUsers$ | async)?.includes(member()!.username)) {
                     <div class="mb-2">
                         <i class="fa fa-user-circle text-success"></i> Online now
                     </div>
                 }
                 <div>
                     <strong>Name:</strong>
-                    <p>{{member().knownAs}}</p> 
+                    <p>{{member()!.knownAs}}</p> 
                 </div>
                 <div>
                     <strong>Location:</strong>
-                    <p>{{member().city}}, {{member().country}}</p>
+                    <p>{{member()!.city}}, {{member()!.country}}</p>
                 </div>
                 <div>
                     <strong>Age:</strong>
-                    <p>{{member().age}}</p>
+                    <p>{{member()!.age}}</p>
                 </div>
                 <div>
                     <strong>Last active:</strong> 
-                    <p>{{member().lastActive | timeago}}</p>
+                    <p>{{member()!.lastActive | timeago}}</p>
                 </div>
                 <div>
                     <strong>Member since:</strong>
-                    <p>{{member().created | date:'dd MMM yyyy'}}</p>
+                    <p>{{member()!.created | date:'dd MMM yyyy'}}</p>
                 </div>
             </div>
             <div class="card-footer">
@@ -39,9 +39,9 @@
     </div>
     <div class="col-12 col-md-8 mb-3">
         <tabset class="member-tabset" #memberTabs>
-            <tab heading="About {{member().knownAs}}" (selectTab)="onTabActivated($event)">                
+            <tab heading="About {{member()!.knownAs}}" (selectTab)="onTabActivated($event)">                
                 <div>
-                    @for (address of member().addresses; track address.id) {
+                    @for (address of member()!.addresses; track address.id) {
                         @if (address.isPrimaryResidence) {
                             <h4>Main address</h4>
                             <p>{{address.street}}, {{address.streetNumber}}, {{address.postalCode}}, {{address.city}}, {{address.country}}</p>                            
@@ -53,11 +53,11 @@
                     }
                 </div>                                
                 <h4>Description</h4>
-                <p>{{member().introduction}}</p>                
+                <p>{{member()!.introduction}}</p>                
             </tab>
             <tab heading="Interests" (selectTab)="onTabActivated($event)">
                 <h4>Interests</h4>
-                <p>{{member().interests}}</p>
+                <p>{{member()!.interests}}</p>
             </tab>
             <tab heading="Photos" #photoTab="tab" (selectTab)="onTabActivated($event)">                                
                  @if(photoTab.active){                     
@@ -76,12 +76,12 @@
                         </div>                                           
                      }
                      <div class="flex mb-2 d-flex-row justify-content-center">
-                        <gallery [items]="galleryImages" class="gallery"></gallery>                    
+                        <gallery [items]="galleryImages()" class="gallery"></gallery>                    
                     </div> 
                  }
             </tab>
             <tab heading="Family members" (selectTab)="onTabActivated($event)">                
-                @for (familyMember of member().familyMembers; track familyMember.id) {
+                @for (familyMember of member()!.familyMembers; track familyMember.id) {
                     <div class="card-familyMember">
                         <div class="row">
                             <div class="col-12 col-sm-4">
@@ -100,10 +100,10 @@
                 }
             </tab>
             <tab heading="Messages" (selectTab)="onTabActivated($event)" >
-                <app-member-messages [username]="member().username"></app-member-messages>
+                <app-member-messages [username]="member()!.username"></app-member-messages>
             </tab>
             <tab heading="Calendar" (selectTab)="onTabActivated($event)">                
-                <app-member-calendar [userCalendars]="member().userCalendars"></app-member-calendar>
+                <app-member-calendar [userCalendars]="member()!.userCalendars"></app-member-calendar>
             </tab>
             <tab *appHasRole="['Admin', 'Moderator']" heading="Students" (selectTab)="onTabActivated($event)" class="custom-tab-size">                                        
                 <app-member-list></app-member-list>                

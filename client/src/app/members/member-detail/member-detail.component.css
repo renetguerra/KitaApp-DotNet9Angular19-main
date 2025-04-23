@@ -52,8 +52,8 @@ button {
 }
 
 ::ng-deep .nav-tabs .nav-item.disabled a {
-    pointer-events: none !important; /* Evita clics */
-    opacity: 0.5 !important; /* Hace que se vea desactivada */
+    pointer-events: none !important;
+    opacity: 0.5 !important;
     cursor: not-allowed !important;
     color: gray !important;
 }
@@ -62,6 +62,7 @@ button {
     .card-img-top,
     .card-img {      
       height: auto;
+      width: 100%;
     }
   
     .d-flex.flex-row {
@@ -76,5 +77,5 @@ button {
     .custom-tab-size {
       overflow-x: auto;
     }
-  }
+}
 

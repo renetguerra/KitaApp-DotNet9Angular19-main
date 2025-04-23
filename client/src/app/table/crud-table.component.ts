@@ -4,7 +4,6 @@ import { FormsModule } from "@angular/forms";
 import { MatDialog, MatDialogModule } from "@angular/material/dialog";
 import { Pagination } from "../_models/pagination";
 import { AdminService } from "../_services/admin.service";
-import { GalleryPhotoEditorComponent } from "../gallery-photo-editor/gallery-photo-editor.component";
 import { MatButtonModule } from "@angular/material/button";
 import { MatIconModule } from "@angular/material/icon";
 import { GenericItem, TableColumn } from "../_models/generic";
@@ -25,6 +24,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class CrudTableComponent<T> implements OnInit, OnChanges {
     private accountService = inject(AccountService); 
+    readonly dialog = inject(MatDialog);             
+    
     user = signal<User>(this.accountService.currentUser()!);
 
     pagination: WritableSignal<Pagination | undefined> = signal(undefined);
@@ -43,12 +44,7 @@ export class CrudTableComponent<T> implements OnInit, OnChanges {
     dataSource = signal<T[]>([]);
         
     displayedColumns = this.columns().map(c => c.columnDef);
-    columnsToDisplayWithExpand = [...this.displayedColumns, 'actions'];  
-    
-    readonly dialog = inject(MatDialog);
-
-    private adminService = inject( AdminService );          
-    
+    columnsToDisplayWithExpand = [...this.displayedColumns, 'actions'];          
 
   ngOnInit(): void {    
     this.dataSource.set(this.dataSourceInput());        
@@ -88,46 +84,46 @@ export class CrudTableComponent<T> implements OnInit, OnChanges {
         });    
     }
 
-    private refreshDataSource(item: any) {
-      const exists = this.dataSource().some( (n: any) => n.id === item.id);
-      if (!exists) {                                
-        this.addItemToDataSource(item);
-      }
-      else {
-        this.updateItemInDataSource(item);
-      } 
+  private refreshDataSource(item: any) {
+    const exists = this.dataSource().some( (n: any) => n.id === item.id);
+    if (!exists) {                                
+      this.addItemToDataSource(item);
     }
+    else {
+      this.updateItemInDataSource(item);
+    } 
+  }
 
-    private updateItemInDataSource(updatedItem: any) {
-      const updatedData = this.dataSource().map((item: any) =>
-        item.id === updatedItem.id ? updatedItem : item
-      );    
-      this.dataSource.set(updatedData); 
-    }
+  private updateItemInDataSource(updatedItem: any) {
+    const updatedData = this.dataSource().map((item: any) =>
+      item.id === updatedItem.id ? updatedItem : item
+    );    
+    this.dataSource.set(updatedData); 
+  }
 
-    private addItemToDataSource(newItem: any) {
-      const newData = [...this.dataSource(), newItem];    
-      this.dataSource.set(newData); 
-    }
-  
-    openDialogDelete(item: any): void {
-      console.log('onDelete called with item:', item); 
-      const config = {
-          class: 'modal-dialog-centered modal-lg',
-          data: {            
-              item: { ...item },    
-              columnDefs: this.columns().filter(c => c.header !== 'actions'),
-              url: this.serviceApiUrl()!,
-          }
+  private addItemToDataSource(newItem: any) {
+    const newData = [...this.dataSource(), newItem];    
+    this.dataSource.set(newData); 
+  }
+
+  openDialogDelete(item: any): void {
+    console.log('onDelete called with item:', item); 
+    const config = {
+        class: 'modal-dialog-centered modal-lg',
+        data: {            
+            item: { ...item },    
+            columnDefs: this.columns().filter(c => c.header !== 'actions'),
+            url: this.serviceApiUrl()!,
         }
-        const dialogRef = this.dialog.open( GenericDeleteModalComponent, config );
-        
-        dialogRef.afterClosed().subscribe((result) => {
-          if (result) {            
-            this.dataSource.set(this.dataSource().filter((i: any) => i.id !== result.id)); 
-          }
-        });
-    }  
+      }
+      const dialogRef = this.dialog.open( GenericDeleteModalComponent, config );
+      
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {            
+          this.dataSource.set(this.dataSource().filter((i: any) => i.id !== result.id)); 
+        }
+      });
+  }  
 
   getCellRendererParams(): any {
     return {

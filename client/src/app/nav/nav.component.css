@@ -13,7 +13,7 @@ img {
 }
 
 .d-flex {
-    position: absolute;
+    position: static;
     top: 0;
     right: 20%;
   }

@@ -13,6 +13,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import { MatButtonModule } from '@angular/material/button';
 import { CalendarService } from 'src/app/_services/calendar.service';
 import { ToastrService } from 'ngx-toastr';
+import { CalendarStore } from 'src/app/_stores/calendar.store';
 
 @Component({
   selector: 'app-member-calendar-modal',
@@ -29,20 +30,17 @@ import { ToastrService } from 'ngx-toastr';
     ]
 })
 export class MemberCalendarModalComponent {  
+
+  private fb = inject(FormBuilder);
+  private cd = inject(ChangeDetectorRef);
+  private calendarService = inject(CalendarService);
+  private toastr = inject(ToastrService);
+  private locale = inject(MAT_DATE_LOCALE);
+  private dialogRef = inject(MatDialogRef<MemberCalendarModalComponent>);
+  private data = inject<Calendar>(MAT_DIALOG_DATA);
+
+  private calendarStore = inject(CalendarStore);
     
-  eventForm: FormGroup = new FormGroup({});
-  range: FormGroup;  
-
-  private readonly _locale = signal(inject<unknown>(MAT_DATE_LOCALE));
-  readonly dateFormatString = computed(() => {
-    if (this._locale() === 'en-EN') {
-      return 'YYYY/MM/DD';
-    } else if (this._locale() === 'es-ES' || this._locale() === 'de-DE') {
-      return 'DD/MM/YYYY';
-    }
-    return '';
-  });
-
   eventOptions = [
     { label: 'Vacation', value: 'isVacation' },
     { label: 'Holiday', value: 'isHolidays' },
@@ -50,47 +48,45 @@ export class MemberCalendarModalComponent {
     { label: 'Other', value: 'isOther' }
   ]; 
 
-  minDate: Date | null = null;
-  maxDate: Date | null = null;
+  readonly calendarEvents = signal<Calendar[]>([]);  
+  readonly localeSignal = signal(this.locale);
+  readonly dateFormatString = computed(() => {
+    switch (this.localeSignal()) {
+      case 'en-EN': return 'YYYY/MM/DD';
+      case 'es-ES':
+      case 'de-DE': return 'DD/MM/YYYY';
+      default: return '';
+    }
+  });
   
-  calendarEvents = signal<Calendar[]>([]);  
+  readonly range = this.fb.group({
+    start: [this.data?.startDate ? new Date(this.data.startDate) : null, Validators.required],
+    end: [this.data?.endDate ? new Date(this.data.endDate) : null, Validators.required]
+  });  
+  
+  readonly eventForm = this.fb.group({
+    title: [this.data?.title ?? '', Validators.required],
+    description: [this.data?.description ?? ''],
+    startDate: [this.range.get('start')?.value ?? undefined, Validators.required],
+    endDate: [this.range.get('end')?.value ?? undefined, Validators.required],
+    eventType: [this.getSelectedOption(this.data), Validators.required],
+    isVacation: [this.data?.isVacation],
+    isHolidays: [this.data?.isHolidays],
+    isSickLeave: [this.data?.isSickLeave],
+    isOther: [this.data?.isOther]
+  });
 
-  private calendarService = inject(CalendarService);
-  private toastr = inject(ToastrService); 
+  readonly minDate = new Date(
+    this.range.get('start')?.value?.getFullYear() ?? new Date().getFullYear(),
+    this.range.get('start')?.value?.getMonth() ?? 0,
+    1
+  );
 
-  constructor(
-    private fb: FormBuilder, private cd: ChangeDetectorRef,
-    public dialogRef: MatDialogRef<MemberCalendarModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data?: Calendar
-  ) {    
-        
-    this.range = this.fb.group({
-      start: [data?.startDate ? new Date(data.startDate) : null, Validators.required],
-      end: [data?.endDate ? new Date(data.endDate) : null, Validators.required],
-    });
-
-    this.minDate = new Date(this.range.get('start')?.value.getFullYear(), this.range.get('start')?.value.getMonth(), 1);
-    
-    this.maxDate = new Date(
-      this.range.get('end')?.value.getFullYear(),
-      this.range.get('end')?.value.getMonth() + 1, 
-      0 
-    );   
-
-    const selectedOption = this.getSelectedOption(data!);
-
-    this.eventForm = this.fb.group({
-      title: [data?.title || '', Validators.required],
-      description: [data?.description || ''],      
-      startDate: [this.range.get('start')?.value || null, Validators.required],
-      endDate: [this.range.get('end')?.value || null, Validators.required],      
-      eventType: [selectedOption, Validators.required],
-      isVacation: [data?.isVacation],
-      isHolidays: [data?.isHolidays],
-      isSickLeave: [data?.isSickLeave],
-      isOther: [data?.isOther]
-    });        
-  }
+  readonly maxDate = new Date(
+    this.range.get('end')?.value?.getFullYear() ?? new Date().getFullYear(),
+    (this.range.get('end')?.value?.getMonth() ?? 0) + 1,
+    0
+  );  
 
   ngOnInit() {    
     this.calendarService.getEvents();
@@ -98,6 +94,7 @@ export class MemberCalendarModalComponent {
   }
 
   getSelectedOption(data: Calendar): string | null {
+    if (!data) return null;
     if (data.isVacation) return 'isVacation';
     if (data.isHolidays) return 'isHolidays';
     if (data.isSickLeave) return 'isSickLeave';
@@ -135,11 +132,14 @@ export class MemberCalendarModalComponent {
     if (this.eventForm.valid) {
       const selectedType = this.eventForm.value.eventType;
 
+      const startRaw = this.range.get('start')?.value;
+      const endRaw = this.range.get('end')?.value;
+
       const updatedEvent: Partial<Calendar> = {
-        title: this.eventForm.value.title,
-        description: this.eventForm.value.description,
-        startDate: new Date(this.range.get('start')?.value),
-        endDate: new Date(this.range.get('end')?.value),
+        title: this.eventForm.value.title ?? '',
+        description: this.eventForm.value.description ?? '',
+        startDate: startRaw ? new Date(startRaw) : undefined,
+        endDate: endRaw ? new Date(endRaw) : undefined,
         isVacation: selectedType === 'isVacation',
         isHolidays: selectedType === 'isHolidays',
         isSickLeave: selectedType === 'isSickLeave',
@@ -148,6 +148,13 @@ export class MemberCalendarModalComponent {
 
       if (this.data?.id) {
         updatedEvent.id = this.data.id;
+        this.calendarStore.calendarEvents.update((events) => {
+          const index = events.findIndex((event) => event.id === this.data.id);
+          if (index !== -1) {
+            events[index] = { ...events[index], ...updatedEvent };
+          }
+          return events;
+        });
       }    
             
       this.calendarService.saveCalendarEvent(updatedEvent as Calendar);      

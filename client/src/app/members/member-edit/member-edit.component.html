@@ -36,7 +36,7 @@
                     <button
                         [disabled]="!editForm?.dirty"
                         type="submit" 
-                        form="editForm()" 
+                        form="editForm" 
                         class="btn btn-success w-100">Save Changes</button>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                 <tab heading="About {{member()?.knownAs}}">
                     <form #editForm="ngForm" id="editForm" (ngSubmit)="updateMember()">
                         <h4 class="mt-2">Description</h4>
-                        <textarea class="form-control w-100" [ngModel]="member()?.introduction" name="introduction" rows="6"></textarea>                    
+                        <textarea class="form-control w-100" [(ngModel)]="member()!.introduction" name="introduction" rows="6"></textarea>                    
                         <h4>Interests</h4>
                         <textarea class="form-control" [ngModel]="member()?.interests" name="interests" rows="6"></textarea>
                         <h4 class="mt-2">Location Details: </h4>
@@ -74,7 +74,7 @@
                         </div>                                                             
                     </div>     
                     <div class="flex mb-2 d-flex-row justify-content-center">
-                        <gallery [items]="galleryImages" class="gallery"></gallery>                    
+                        <gallery [items]="galleryImages()" class="gallery"></gallery>                    
                     </div>                
                 </tab>
             </tabset>

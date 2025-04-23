@@ -27,16 +27,22 @@ export class MessageService {
       })
       .withAutomaticReconnect()
       .build();
+
     this.hubConnection.start().catch(error => console.log(error));
 
     this.hubConnection.on('ReceiveMessageThread', messages => {
       this.messageThreadSource.next(messages);
     })
 
+    this.hubConnection.off('NewMessage');
     this.hubConnection.on('NewMessage', message => {
       this.messageThread$.pipe(take(1)).subscribe({
         next: messages => {
-          this.messageThreadSource.next([...messages, message])
+          const alreadyExists = messages.some(m => m.id === message.id);
+          if (!alreadyExists) {
+            this.messageThreadSource.next([...messages, message]);
+          }
+          // this.messageThreadSource.next([...messages, message])
         }
       })
     })

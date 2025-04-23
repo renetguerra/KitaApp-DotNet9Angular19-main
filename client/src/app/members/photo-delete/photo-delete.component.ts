@@ -1,15 +1,15 @@
-import { Component, OnInit, inject, input, signal } from '@angular/core';
-import { FileUploader, FileUploadModule } from 'ng2-file-upload';
+import { Component, OnInit, computed, inject, input, signal } from '@angular/core';
+import { FileUploadModule } from 'ng2-file-upload';
 import { Member } from 'src/app/_models/member';
 import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
-import { MembersService } from 'src/app/_services/members.service';
-import { environment } from 'src/environments/environment';
-import { NgClass, NgStyle, DecimalPipe } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Photo } from 'src/app/_models/photo';
-import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
+import { GalleryModule } from 'ng-gallery';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { PhotoStore } from 'src/app/_stores/photo.store';
+import { MemberStore } from 'src/app/_stores/member.store';
 
 @Component({
     selector: 'app-photo-delete',
@@ -18,55 +18,30 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
     imports: [NgClass, FileUploadModule, GalleryModule, MatDialogModule, MatButtonModule]
 })
 export class PhotoDeleteComponent implements OnInit {
-  private accountService = inject(AccountService);    
-  
-  uploader = signal<FileUploader | undefined>(undefined);
-
-  hasBaseDropzoneOver = false;
-  baseUrl = environment.apiUrl;
-  user = signal<User>(this.accountService.currentUser()!);
-
-  // galleryImages: GalleryItem[] = [];
-
+  private accountService = inject(AccountService);      
   readonly dialogRef = inject(MatDialogRef<PhotoDeleteComponent>);
   readonly data = inject<Member>(MAT_DIALOG_DATA);
+
+  readonly photoStore = inject(PhotoStore);
+  readonly memberStore = inject(MemberStore);
+  
+  user = signal<User>(this.accountService.currentUser()!);  
   member = input<Member | undefined>(this.data);
+  userPhotos = computed(() => this.photoStore.userPhotos());
+  
 
-  constructor(private memberService: MembersService) {    
+  constructor() {
+    this.memberStore.setMember(this.data);
   }
 
-  ngOnInit(): void {    
-    
-  }
-
-  fileOverBase(e: any) {
-    this.hasBaseDropzoneOver = e;
-  }  
+  ngOnInit(): void { }  
 
   setMainPhoto(photo: Photo) {
-    this.memberService.setMainPhoto(photo.id).subscribe({
-      next: _ => {
-        if (this.user() && this.member()) {
-          this.user().photoUrl = photo.url;
-          this.accountService.setCurrentUser(this.user());
-          this.member()!.photoUrl = photo.url;
-          this.member()!.userPhotos.forEach(p => {
-            if (p.isMain) p.isMain = false;
-            if (p.id === photo.id) p.isMain = true;
-          })
-        }
-      }
-    })
+    this.photoStore.setMainPhoto(photo);
   }
 
-  deletePhoto(username: string, photoId: number) {
-    this.memberService.deletePhoto(username, photoId).subscribe({
-      next: _ => {
-        if (this.member()) {
-          this.member()!.userPhotos = this.member()!.userPhotos.filter(x => x.id !== photoId);          
-        }
-      }
-    })
+  deletePhoto(photoId: number) {
+    this.photoStore.deletePhoto(photoId);
   }
     
 }

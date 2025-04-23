@@ -7,7 +7,7 @@
   <form
     #form="ngForm"
     class="row gy-2 gx-3 align-items-center mb-3"
-    (ngSubmit)="loadMembers()"
+    (ngSubmit)="applyFilters()"
     autocomplete="off"
   >
     <div class="col-12 col-sm-auto">
@@ -52,7 +52,7 @@
 
     <div class="col-12 col-sm-auto">
       <button class="btn btn-primary me-2" type="submit">Apply Filters</button>
-      <button (click)="resetFilters()" class="btn btn-info ms-1" type="submit">
+      <button (click)="resetFilters()" class="btn btn-info ms-1" type="button">
         Reset Filters
       </button>
     </div>
@@ -63,7 +63,7 @@
           type="button"
           class="btn btn-primary"
           name="orderBy"
-          (click)="loadMembers()"
+          (click)="setOrderBy('lastActive')"
           btnRadio="lastActive"
           [ngModel]="userParams()?.orderBy"
         >
@@ -73,7 +73,7 @@
           type="button"
           class="btn btn-primary"
           name="orderBy"
-          (click)="loadMembers()"
+          (click)="setOrderBy('created')"
           btnRadio="created"
           [ngModel]="userParams()?.orderBy"
         >

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { RegisterComponent } from '../register/register.component';
 import { NgIf } from '@angular/common';
 import { User } from '../_models/user';
@@ -12,6 +12,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { GalleryPhotoDeleteComponent } from '../gallery-photo-delete/gallery-photo-delete.component';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { startWith, Subject, switchMap } from 'rxjs';
 
 @Component({
     selector: 'app-home',
@@ -19,24 +21,30 @@ import { GalleryPhotoDeleteComponent } from '../gallery-photo-delete/gallery-pho
     styleUrls: ['./home.component.css'],
     imports: [RegisterComponent, GalleryModule, MatButtonModule, MatDialogModule, MatIconModule]
 })
-export class HomeComponent implements OnInit {
-  registerMode = false;
-  users: any;
-
+export class HomeComponent {
   private accountService = inject(AccountService);
+  private galleryService = inject(GalleryService);
+  readonly dialog = inject(MatDialog);
+  
   user = signal<User>(this.accountService.currentUser()!);
 
-  galleryImages: GalleryItem[] = [];
-  private galleryService = inject(GalleryService);
-  galleryPhotos = signal<Photo[]>([]);
+  private readonly refreshTrigger = new Subject<void>();
+  
+  readonly galleryPhotos = toSignal(
+    this.refreshTrigger.pipe(
+      startWith(void 0),
+      switchMap(() => this.galleryService.getGalleryPhotos())
+    ),
+    { initialValue: [] }
+  );
 
-  readonly dialog = inject(MatDialog);
-
-  constructor() {}
-
-  ngOnInit(): void {
-    this.loadGalleryPhotos();
-  }
+  readonly galleryImages = computed(() =>
+    this.galleryPhotos().map(photo =>
+      new ImageItem({ src: photo.url, thumb: photo.url })
+    )
+  );
+  
+  registerMode = false;      
 
   registerToggle() {
     this.registerMode = !this.registerMode
@@ -44,40 +52,18 @@ export class HomeComponent implements OnInit {
 
   cancelRegisterMode(event: boolean) {
     this.registerMode = event;
-  }
-
-  loadGalleryPhotos() {
-    this.galleryService.getGalleryPhotos().subscribe({
-      next: (photos) => {
-        this.galleryPhotos.set(photos);        
-        this.updateGalleryImages();
-      },
-      error: error => {
-        console.error('Error loading gallery photos:', error);
-      }
-    });     
-  }
-  
-  updateGalleryImages() {
-    this.galleryImages = this.galleryPhotos().map(photo => 
-      new ImageItem({ src: photo.url, thumb: photo.url })
-    );
-  }
+  }  
 
   openDialogAddPhoto() {
     const dialogRef = this.dialog.open(GalleryPhotoEditorComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-      this.loadGalleryPhotos();
-    });
-  }
+    dialogRef.afterClosed().subscribe(() => this.refreshTrigger.next());          
+  }  
 
   openDialogDeletePhoto() {
     const dialogRef = this.dialog.open(GalleryPhotoDeleteComponent);
 
-    dialogRef.afterClosed().subscribe(result => {
-      this.loadGalleryPhotos();
-    });
+    dialogRef.afterClosed().subscribe(() => this.refreshTrigger.next());
   }
 
 }

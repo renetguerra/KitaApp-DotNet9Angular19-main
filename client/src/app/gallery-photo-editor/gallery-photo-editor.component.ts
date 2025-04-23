@@ -41,14 +41,6 @@ export class GalleryPhotoEditorComponent implements OnInit {
     this.hasBaseDropzoneOver = e;
   }  
 
-  // deletePhoto(photoId: number) {
-  //   this.memberService.deletePhoto(photoId).subscribe({
-  //     next: _ => {        
-  //         this.galleryPhotos.set(this.galleryPhotos()!.filter(x => x.id !== photoId));        
-  //     }
-  //   })
-  // }
-
   initializeUploader() {
     this.uploader.set(
       new FileUploader({

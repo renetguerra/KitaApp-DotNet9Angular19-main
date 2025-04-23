@@ -1,9 +1,8 @@
-import { AfterViewInit, ChangeDetectorRef, Component, HostListener, OnInit, ViewChild, inject, signal } from '@angular/core';
+import { Component, HostListener, OnInit, inject, viewChild } from '@angular/core';
 import { NgForm, FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Member } from 'src/app/_models/member';
 import { AccountService } from 'src/app/_services/account.service';
-import { MembersService } from 'src/app/_services/members.service';
 import { TimeagoModule } from 'ngx-timeago';
 import { PhotoEditorComponent } from '../photo-editor/photo-editor.component';
 import { TabsModule } from 'ngx-bootstrap/tabs';
@@ -12,7 +11,9 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { PhotoDeleteComponent } from '../photo-delete/photo-delete.component';
-import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
+import { GalleryModule } from 'ng-gallery';
+import { MemberStore } from 'src/app/_stores/member.store';
+import { PhotoStore } from 'src/app/_stores/photo.store';
 
 @Component({
     selector: 'app-member-edit',
@@ -23,70 +24,62 @@ import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
     ]
 })
 export class MemberEditComponent implements OnInit  {
-  private accountService = inject(AccountService);
-  @ViewChild('editForm') editForm: NgForm | undefined;
-  // editForm = viewChild.required<NgForm | undefined>('editForm');
+
+  private accountService = inject(AccountService);  
+  private toastr = inject(ToastrService);
+  readonly dialog = inject(MatDialog);
+
+  private memberStore = inject(MemberStore);
+  private photoStore = inject(PhotoStore);
+  
+  editForm = viewChild<NgForm>('editForm');
   @HostListener('window:beforeunload', ['$event']) unloadNotification($event: any) {
-    if (this.editForm?.dirty) {
+    if (this.editForm()?.dirty) {
       $event.returnValue = true;
     }
   }
-  member = signal<Member | undefined>(undefined);
+
   user = this.accountService.currentUser();
+  member = this.memberStore.member;
 
-  galleryImages: GalleryItem[] = [];
+  galleryImages = this.photoStore.galleryImages;
 
-  readonly dialog = inject(MatDialog);
-
-  constructor(private memberService: MembersService,
-    private toastr: ToastrService) {}
-
-  ngOnInit(): void {
-    this.loadMember();        
-  }  
-
-  loadMember() {
-    if (!this.user) return;
-    this.memberService.getMember(this.user.username).subscribe({
-      next: member => {
-        this.member.set(member)
-        this.getImages();       
-      }
-    })
-  }
-
+  ngOnInit(): void {   
+    const memberValue = this.member();
+    if (memberValue) {
+      this.memberStore.setMember(memberValue);
+    }
+  }    
+  
   updateMember() {
-    this.memberService.updateMember(this.editForm?.value).subscribe({
-      next: _ => {
+    const formValue = this.editForm()?.value;
+    if (!formValue) return;
+
+    const current = this.member();
+    if (!current) return;
+
+    const updatedMember: Member = {
+      ...current,
+      ...formValue      
+    };
+
+    this.memberStore.updateMember(updatedMember).subscribe({
+      next: () => {        
         this.toastr.success('Profile updated successfully');
-        this.editForm?.reset(this.member());
+        this.editForm()?.reset(updatedMember);
       }
-    })
-  }
-
-  getImages() {
-    this.galleryImages = this.member()!.userPhotos.map(photo => 
-      new ImageItem({ src: photo.url, thumb: photo.url })
-    );
-  }
-  
-  openDialogAddPhoto() {
-    const dialogRef = this.dialog.open(PhotoEditorComponent, {
-      data: this.member()
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      this.getImages();
     });
   }
   
-  openDialogDeletePhoto() {    
-    const dialogRef = this.dialog.open(PhotoDeleteComponent, {
+  openDialogAddPhoto() {    
+    this.dialog.open(PhotoEditorComponent, {
       data: this.member()
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      this.getImages();
-    });
+    });    
+  }
+  
+  openDialogDeletePhoto() {        
+    this.dialog.open(PhotoDeleteComponent, {
+      data: this.member()
+    });            
   }
 }
