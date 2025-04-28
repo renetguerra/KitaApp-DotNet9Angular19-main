@@ -1,0 +1,40 @@
+<div class="container mt-5">
+    @if (!registerMode) {
+        <div style="text-align: center;">
+            <h1>Welcome</h1>
+            <p class="lead">Come on in to view your information... all you need to do is sign up!</p>
+            <div class="text-center">
+                @if (user() && user()!.roles.includes('Admin')) {                    
+                    <button (click)="registerToggle()" class="btn btn-primary btn-lg me-2 mb-2">Register</button>                   
+                }
+                <button class="btn btn-info btn-lg mb-2">Learn more</button>
+                @if (user() && user()!.roles.includes('Admin')) {                    
+                    <div class="row mt-3">  
+                        <div class="flex justify-content-end mb-2 d-flex-row">
+                            <button mat-fab extended (click)="openDialogAddPhoto()">
+                                <mat-icon>add_a_photo</mat-icon>
+                                Add photos
+                            </button>
+                            <button mat-fab extended (click)="openDialogDeletePhoto()">
+                                <mat-icon>delete</mat-icon>
+                                Delete photos
+                            </button>
+                        </div>                                                             
+                    </div>                   
+                }                
+                <div class="flex mb-2 d-flex-row justify-content-center">
+                    <gallery [items]="galleryImages()" class="gallery"></gallery>                    
+                </div> 
+            </div>
+        </div>
+    }
+    @else {
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-4">
+                    <app-register (cancelRegister)="cancelRegisterMode($event)"></app-register>
+                </div>
+            </div>
+        </div>
+    }    
+</div>

@@ -1,19 +1,18 @@
 import { Routes } from "@angular/router";
-import { adminGuard } from "./_guards/admin.guard";
-import { authGuard } from "./_guards/auth.guard";
-import { preventUnsavedChangesGuard } from "./_guards/prevent-unsaved-changes.guard";
-import { memberDetailedResolver } from "./_resolvers/member-detailed.resolver";
-import { AdminPanelComponent } from "./admin/admin-panel/admin-panel.component";
-import { NotFoundComponent } from "./errors/not-found/not-found.component";
-import { ServerErrorComponent } from "./errors/server-error/server-error.component";
-import { TestErrorsComponent } from "./errors/test-errors/test-errors.component";
-import { HomeComponent } from "./home/home.component";
-import { MemberDetailComponent } from "./members/member-detail/member-detail.component";
-import { MemberEditComponent } from "./members/member-edit/member-edit.component";
-import { MemberListComponent } from "./members/member-list/member-list.component";
-import { MessagesComponent } from "./messages/messages.component";
-import { MenuComponent } from "./menu/menu.component";
-import { AdminNotificationComponent } from "./admin/admin-notification/admin-notification.component";
+import { adminGuard } from "./core/_guards/admin.guard";
+import { authGuard } from "./core/_guards/auth.guard";
+import { preventUnsavedChangesGuard } from "./core/_guards/prevent-unsaved-changes.guard";
+import { memberDetailedResolver } from "./core/_resolvers/member-detailed.resolver";
+import { AdminPanelComponent } from "./features/admin/admin-panel/admin-panel.component";
+import { NotificationManagementComponent } from "./features/admin/notification-management/notification-management.component";
+import { NotFoundComponent } from "./features/errors/not-found/not-found.component";
+import { HomeComponent } from "./features/home/home.component";
+import { MemberDetailComponent } from "./features/members/pages/member-detail/member-detail.component";
+import { MemberEditComponent } from "./features/members/pages/member-edit/member-edit.component";
+import { MemberListComponent } from "./features/members/pages/member-list/member-list.component";
+import { MenuComponent } from "./features/menu/menu.component";
+import { MessagesComponent } from "./features/messages/messages.component";
+
 
 export const routes: Routes = [
     { path: '', component: HomeComponent },
@@ -26,13 +25,11 @@ export const routes: Routes = [
             { path: 'members/:username', component: MemberDetailComponent, resolve: { member: memberDetailedResolver } },
             { path: 'member/edit', component: MemberEditComponent, canDeactivate: [preventUnsavedChangesGuard] },            
             { path: 'messages', component: MessagesComponent },
-            { path: 'admin', component: AdminPanelComponent, canActivate: [adminGuard] },
-            { path: 'admin-notification', component: AdminNotificationComponent, canActivate: [adminGuard] },
+            { path: 'admin', component: AdminPanelComponent, canActivate: [adminGuard] },            
+            { path: 'admin-notification', component: NotificationManagementComponent, canActivate: [adminGuard] },
+            
         ]
     },
-    { path: 'menu', component: MenuComponent },
-    { path: 'errors', component: TestErrorsComponent },
-    { path: 'not-found', component: NotFoundComponent },
-    { path: 'server-error', component: ServerErrorComponent },
+    { path: 'menu', component: MenuComponent },    
     { path: '**', component: NotFoundComponent, pathMatch: 'full' },
 ];

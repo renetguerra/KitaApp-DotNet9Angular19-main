@@ -1,0 +1,36 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">Notifications for {{username}}</h4>
+    <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #notificationsForm="ngForm" id="notificationsForm">      
+        @for (notification of availableNotifications; track $index) {
+          <div class="form-check d-flex">
+            <input type="checkbox"
+              class="form-check-input"
+              [checked]="checkedNotification()[notification.id]"
+              value="notification"
+              (change)="updateChecked(notification)"              
+            >
+            <label>{{notification.description}}</label>
+            @if (checkedNotification()[notification.id]) {
+              <div class="ms-auto">
+                <button type="button" class="btn btn-info btn-xs" (click)="deleteNotification(notification.id, username)">Done!</button>
+              </div>                
+            }
+          </div>
+        }      
+    </form>
+  </div>
+  
+    <div class="modal-footer">
+      @if (user().roles.includes('Admin')) {
+        <button type="button" class="btn btn-success" (click)="createNotifications()">Submit</button>
+      }
+      <button class="btn btn-default me-2" (click)="cancel()" type="button">Cancel</button>
+    </div>
+  
+
+ 

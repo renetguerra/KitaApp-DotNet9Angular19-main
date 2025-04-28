@@ -1,0 +1,24 @@
+<div class="row">    
+  <h2>Admin notification</h2>
+  <div class="tab-panel">
+    <tabset class="member-tabset">
+      <tab heading="Notification management" *appHasRole="['Admin']">
+        <div class="container">
+          <div class="flex-row">
+            <div class="col-12">
+              <div class="container">        
+                <div class="flex-row">
+                  <app-crud-table
+                    [serviceApiUrl]="'notifications/'"
+                    [columnsInput]="columns"        
+                    [dataSourceInput]="dataSource()">
+                  </app-crud-table>
+                </div>                    
+              </div>                  
+            </div>   
+          </div>
+        </div>
+      </tab>
+    </tabset>
+  </div>    
+</div>   

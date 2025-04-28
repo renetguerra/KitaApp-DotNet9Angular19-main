@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AccountService } from './_services/account.service';
-import { User } from './_models/user';
+import { AccountService } from './core/_services/account.service';
+import { User } from './core/_models/user';
 import { RouterOutlet } from '@angular/router';
-import { NavComponent } from './nav/nav.component';
 import { NgxSpinnerComponent } from 'ngx-spinner';
+import { NavComponent } from './features/nav/nav.component';
 
 @Component({
     selector: 'app-root',
