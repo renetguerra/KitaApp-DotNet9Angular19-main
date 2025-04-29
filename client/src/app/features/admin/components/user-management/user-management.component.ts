@@ -4,7 +4,8 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { User } from 'src/app/core/_models/user';
 import { AdminService } from 'src/app/core/_services/admin.service';
 import { AdminUserStore } from 'src/app/core/_stores/adminUser.store';
-import { RolesModalComponent } from '../../modals/roles-modal/roles-modal.component';
+import { RolesModalComponent } from 'src/app/shared/components/modals/roles-modal/roles-modal.component';
+
 
 @Component({
     selector: 'app-user-management',

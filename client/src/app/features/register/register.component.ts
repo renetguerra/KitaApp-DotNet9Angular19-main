@@ -3,8 +3,8 @@ import { ToastrService } from 'ngx-toastr';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AccountService } from 'src/app/core/_services/account.service';
-import { TextInputComponent } from 'src/app/shared/_forms/text-input/text-input.component';
-import { DatePickerComponent } from 'src/app/shared/_forms/date-picker/date-picker.component';
+import { DatePickerComponent } from 'src/app/shared/components/_forms/date-picker/date-picker.component';
+import { TextInputComponent } from 'src/app/shared/components/_forms/text-input/text-input.component';
 
 @Component({
     selector: 'app-register',

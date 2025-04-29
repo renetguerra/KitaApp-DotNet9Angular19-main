@@ -7,8 +7,8 @@ import { NotificationService } from "../_services/notification.service";
 import { Member } from "../_models/member";
 import { BsModalService } from "ngx-bootstrap/modal";
 import { MemberStore } from "./member.store";
-import { NotificationSheetComponent } from "src/app/features/sheet/notification-sheet/notification-sheet.component";
-import { NotificationsModalComponent } from "src/app/features/modals/notifications-modal/notifications-modal.component";
+import { NotificationsModalComponent } from "src/app/shared/components/modals/notifications-modal/notifications-modal.component";
+import { NotificationSheetComponent } from "src/app/shared/components/sheet/notification-sheet/notification-sheet.component";
 
 
 @Injectable({ providedIn: 'root' })

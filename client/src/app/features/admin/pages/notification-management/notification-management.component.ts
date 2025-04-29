@@ -13,9 +13,10 @@ import { HasRoleDirective } from 'src/app/shared/_directives/has-role.directive'
 import { TabsModule } from "ngx-bootstrap/tabs";
 import { Params } from 'src/app/core/_models/params';
 import { AdminNotificationStore } from 'src/app/core/_stores/adminNotifications.store';
-import { GenericCreateUpdateModalComponent } from '../../modals/generic-create-update-modal/generic-create-update-modal.component';
-import { GenericDeleteModalComponent } from '../../modals/generic-delete-modal/generic-delete-modal.component';
-import { CrudTableComponent } from '../../table/crud-table.component';
+import { GenericCreateUpdateModalComponent } from 'src/app/shared/components/modals/generic-create-update-modal/generic-create-update-modal.component';
+import { GenericDeleteModalComponent } from 'src/app/shared/components/modals/generic-delete-modal/generic-delete-modal.component';
+import { CrudTableComponent } from 'src/app/shared/components/table/crud-table.component';
+
 
 
 const NOTIFICATION_COLUMNS: TableColumn<Notification>[] = [

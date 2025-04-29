@@ -6,11 +6,11 @@ import {CdkAccordionModule} from '@angular/cdk/accordion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { GenericCreateUpdateModalComponent } from '../modals/generic-create-update-modal/generic-create-update-modal.component';
 import { Menu } from 'src/app/core/_models/menu';
 import { User } from 'src/app/core/_models/user';
 import { AccountService } from 'src/app/core/_services/account.service';
 import { MenuStore } from 'src/app/core/_stores/menu.store';
+import { GenericCreateUpdateModalComponent } from 'src/app/shared/components/modals/generic-create-update-modal/generic-create-update-modal.component';
 
 @Component({
     selector: 'app-menu',

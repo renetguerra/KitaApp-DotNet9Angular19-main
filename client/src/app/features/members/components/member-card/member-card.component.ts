@@ -6,7 +6,7 @@ import { RouterLink, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { NotificationStore } from 'src/app/core/_stores/notification.store';
-import { NotificationsModalComponent } from 'src/app/features/modals/notifications-modal/notifications-modal.component';
+import { NotificationsModalComponent } from 'src/app/shared/components/modals/notifications-modal/notifications-modal.component';
 
 @Component({
     selector: 'app-member-card',
