@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  app:
+    image: kita-api
+    container_name: kita-api-container
+    build:
+      context: .
+    ports:      
+      - "5000:5000"
+      - "5006:5005"
+    volumes:
+      - ./ssl:/app/ssl     
+    environment:
+      - ASPNETCORE_URLS=http://+:5000;https://+:5005
+      - CONNECTIONSTRINGS__DEFAULTCONNECTION=Server=db;Database=KitaDB;User Id=sa;Password=Adm1nP@ssw0rd!;TrustServerCertificate=True      
+      - ASPNETCORE_Kestrel__EndPoints__Https__Certificate__PathPFX=/app/ssl/cert.pfx
+      - ASPNETCORE_Kestrel__EndPoints__Https__Certificate__Password=authorizationSSL
+    depends_on:
+      - db
+    networks:
+      - kita-network
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: kita-db
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Adm1nP@ssw0rd!
+    ports:
+      - "1433:1433"
+    volumes:
+      - kita-db-data:/var/opt/mssql      
+    networks:
+      - kita-network
+    
+
+volumes:
+  kita-db-data:
+    driver: local
+
+networks:
+  kita-network:
+    driver: bridge
